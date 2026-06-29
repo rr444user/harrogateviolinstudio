@@ -1,17 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Page } from '../types';
-import { Award, BookOpen, Clock, Heart, ArrowRight, Music } from 'lucide-react';
+import { Award, BookOpen, Clock, Music2, ArrowRight, X } from 'lucide-react';
 import catBanner from '../assets/images/banners/catbanner.jpg';
 import profileImage from '../assets/images/profile.png';
-import catViolinist from '../assets/images/cat_violinist_1782579871582.jpg';
-import catOrchestra from '../assets/images/cat_orchestra_1782579885034.jpg';
-import catViolinLesson from '../assets/images/cat_violin_lesson_1782579901070.jpg';
+
+// Dynamically import all images and videos from the homeGallery folder
+const galleryModules = import.meta.glob('../assets/homeGallery/*.{png,jpg,jpeg,svg,mp4,webm}', { eager: true });
+const galleryItems = Object.values(galleryModules).map((module: any) => module.default || module);
 
 interface HomeViewProps {
   setCurrentPage: (page: Page) => void;
 }
 
 export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
+  const [activeImage, setActiveImage] = useState<string | null>(null);
+
   const handleContactClick = () => {
     setCurrentPage('contact');
     window.location.hash = 'contact';
@@ -24,52 +27,48 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const isVideo = (path: string) => {
+    return path.endsWith('.mp4') || path.endsWith('.webm');
+  };
+
   return (
     <div className="animate-fadeIn">
       {/* Hero Banner Section */}
-      <section 
-        className="relative bg-wood-dark text-white pt-32 pb-20 md:pt-48 md:pb-32 px-6 overflow-hidden border-b border-wood-border"
-        style={{
-          backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.1) 100%), url(${catBanner})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'right center',
-        }}
-      >
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start gap-12 relative z-10">
-          <div className="w-full md:max-w-xl md:w-1/2 space-y-6 text-left animate-fadeIn">
-            
-            <h1 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl tracking-tight leading-tight text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
-              Private Violin tuition in <span className="text-[#C29B68]">Harrogate</span> and online for all ages and abilities.
-            </h1>
-
-            <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
-              <button
-                onClick={handleContactClick}
-                className="w-full sm:w-auto px-8 py-4 bg-wood-sand hover:bg-wood-brown text-white rounded-sm font-mono text-xs font-bold uppercase tracking-widest shadow-lg shadow-wood-sand/20 transform active:scale-95 transition-all text-center"
-                id="hero-contact-btn"
-              >
-                Book Intro Lesson
-              </button>
-              <button
-                onClick={handleTeachingClick}
-                className="w-full sm:w-auto px-8 py-4 border border-white/40 hover:border-white text-white rounded-sm font-mono text-xs font-bold uppercase tracking-widest hover:bg-white/10 transition-all text-center"
-                id="hero-teaching-btn"
-              >
-                Teaching Philosophy
-              </button>
-            </div>
-          </div>
-
-          {/* Column structure maintained without the custom shape as requested */}
-          <div className="w-full md:w-1/2 flex justify-center md:justify-end relative min-h-[340px] h-full">
-          </div>
+      <section className="relative bg-[#0a0603] text-white overflow-hidden border-b border-wood-border w-full flex items-center min-h-[500px] sm:min-h-[550px] md:min-h-[600px] lg:min-h-[650px]">
+        <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
+          <img 
+            src={catBanner} 
+            alt="Studio Banner"
+            className="w-full h-full object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/80 md:bg-gradient-to-r md:from-black/60 md:via-black/30 md:to-black/80" />
         </div>
 
-        {/* Backdrop blob requested by theme */}
-        <div className="absolute left-[-100px] top-1/2 -translate-y-1/2 w-[400px] h-[400px] opacity-[0.03] text-wood-sand pointer-events-none">
-          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <path fill="currentColor" d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,79.6,-45.8C87.4,-32.5,90,-16.2,88.5,-0.9C86.9,14.4,81.3,28.8,72.4,40.4C63.5,52.1,51.3,61,38.5,67.8C25.7,74.6,12.8,79.3,-1.4,81.7C-15.6,84.1,-31.2,84.3,-44.1,77.7C-57,71.1,-67.2,57.7,-74.3,43.4C-81.4,29.1,-85.4,14.6,-84.3,0.6C-83.2,-13.4,-77,-26.8,-68.8,-38.9C-60.6,-51,-50.4,-61.8,-38.3,-70.3C-26.2,-78.8,-13.1,-85.1,1.1,-86.9C15.3,-88.7,30.6,-83.6,44.7,-76.4Z" transform="translate(100 100)" />
-          </svg>
+        <div className="relative w-full z-10 pt-36 pb-16 px-6 md:px-12 flex items-center">
+          <div className="w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+            <div className="hidden md:block md:col-span-6 pointer-events-none" />
+            <div className="w-full md:col-span-6 space-y-5 md:space-y-6 text-left animate-fadeIn bg-black/40 md:bg-transparent p-6 md:p-0 rounded-md backdrop-blur-xs md:backdrop-blur-none">
+              <h1 className="font-serif font-bold text-2xl sm:text-4xl md:text-4xl lg:text-5xl tracking-tight leading-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+                Private Violin tuition in <span className="text-[#C29B68]">Harrogate</span> and online for all ages and abilities.
+              </h1>
+              <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
+                <button
+                  onClick={handleContactClick}
+                  className="w-full sm:w-auto px-6 py-3 md:px-8 md:py-4 bg-wood-sand hover:bg-wood-brown text-white rounded-sm font-mono text-xs font-bold uppercase tracking-widest shadow-lg shadow-wood-sand/20 transform active:scale-95 transition-all text-center z-20 relative"
+                  id="hero-contact-btn"
+                >
+                  Book Intro Lesson
+                </button>
+                <button
+                  onClick={handleTeachingClick}
+                  className="w-full sm:w-auto px-6 py-3 md:px-8 md:py-4 border border-white/40 hover:border-white text-white rounded-sm font-mono text-xs font-bold uppercase tracking-widest hover:bg-white/10 transition-all text-center z-20 relative"
+                  id="hero-teaching-btn"
+                >
+                  Teaching Ethos
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -109,11 +108,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
 
             <div className="bg-wood-light p-6 rounded-sm shadow-xs border border-wood-border/60 space-y-3">
               <div className="text-wood-sand">
-                <Heart className="h-8 w-8" />
+                <Music2 className="h-8 w-8" />
               </div>
               <h3 className="font-serif text-lg font-bold text-wood-dark">Instrument Loan</h3>
               <p className="text-xs text-wood-muted leading-relaxed font-sans">
-                Borrow a size-appropriate violin during trial stages to prevent upfront purchase expenses!
+                Borrow a size-appropriate Violin during trial stages to prevent upfront purchase expenses!
               </p>
             </div>
           </div>
@@ -124,8 +123,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
       <section className="py-20 px-6 bg-wood-light">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            
-            {/* Visual Column */}
             <div className="lg:col-span-5 space-y-6">
               <div className="flex flex-col items-center text-center p-8 bg-white border border-wood-border rounded-sm shadow-sm">
                 <div className="w-64 h-64 rounded-full overflow-hidden border-4 border-wood-beige bg-wood-light flex items-center justify-center shadow-inner relative group">
@@ -149,10 +146,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
                 </div>
               </div>
 
-              {/* Elegant Quote block */}
               <div className="border-l-4 border-wood-sand pl-6 py-2 bg-wood-beige/30">
                 <p className="font-sans italic text-sm text-wood-muted">
-                  "Progress on the violin is built through hundreds of small, consistent improvements rather than dramatic breakthroughs."
+                  "Progress on the Violin is built through hundreds of small, consistent improvements rather than dramatic breakthroughs."
                 </p>
                 <p className="font-mono text-[10px] text-wood-sand mt-2 font-bold uppercase tracking-wider">
                   — Katherine Rosin
@@ -160,7 +156,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
               </div>
             </div>
 
-            {/* Biography Text Column */}
             <div className="lg:col-span-7 space-y-6">
               <span className="font-mono text-xs uppercase tracking-wider text-wood-sand font-bold block">
                 Meet the Teacher
@@ -171,13 +166,13 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
               
               <div className="font-sans text-wood-muted text-sm sm:text-base leading-relaxed space-y-5">
                 <p>
-                  Katherine is a violin teacher and performer with a decade of teaching experience spanning individual tuition, chamber music coaching, orchestral training, and classroom-based music education.
+                  Katherine is a Violin teacher and performer with a decade of teaching experience spanning individual tuition, chamber music coaching, orchestral training, and classroom-based music education.
                 </p>
                 <p>
-                  She began her musical training at the <strong className="font-semibold text-wood-dark">North London Conservatoire</strong>, before returning after graduation as a member of the teaching faculty. There, she specialised in violin instruction for young children using the Kodály approach, developing strong foundations in technique, rhythm, and aural awareness.
+                  She began her musical training at the <strong className="font-semibold text-wood-dark">North London Conservatoire</strong>, before returning after graduation as a member of the teaching faculty. There, she specialised in Violin instruction for young children using the Kodály approach, developing strong foundations in technique, rhythm, and aural awareness.
                 </p>
                 <p>
-                  She holds a <strong className="font-semibold text-wood-dark">Bachelor of Music (Honours)</strong> degree from <strong className="font-semibold text-wood-dark">Trinity Conservatoire of Music, London</strong>, where she studied violin with Diana Cummings. Alongside her performance studies, she completed specialist training in instrumental teaching pedagogy and led music workshops in primary schools across Greenwich and Lewisham.
+                  She holds a <strong className="font-semibold text-wood-dark">Bachelor of Music (Honours)</strong> degree from <strong className="font-semibold text-wood-dark">Trinity Conservatoire of Music, London</strong>, where she studied Violin with Diana Cummings. Alongside her performance studies, she completed specialist training in instrumental teaching pedagogy and led music workshops in primary schools across Greenwich and Lewisham.
                 </p>
               </div>
 
@@ -187,7 +182,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
                    className="px-6 py-3 bg-wood-dark hover:bg-wood-sand text-white hover:text-white rounded-sm font-mono text-xs font-bold uppercase tracking-widest flex items-center space-x-2"
                    id="biography-teaching-philosophy-btn"
                 >
-                  <span>Teaching Philosophy</span>
+                  <span>Teaching Ethos</span>
                   <ArrowRight className="h-4 w-4" />
                 </button>
                 <button
@@ -199,88 +194,82 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
                 </button>
               </div>
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* Whimsical Cat Violinist & Orchestra Showcase Section */}
-      <section className="py-20 px-6 bg-wood-beige border-t border-b border-wood-border">
-        <div className="max-w-6xl mx-auto space-y-12">
-          <div className="text-center max-w-2xl mx-auto space-y-3">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-wood-sand font-bold flex items-center justify-center space-x-1.5">
-              <Music className="h-3.5 w-3.5" />
-              <span>Whimsical Studio Inspiration</span>
-            </span>
-            <h2 className="font-serif font-bold text-2xl sm:text-3xl text-wood-dark tracking-tight leading-tight">
-              A Love for Music, Expressed Elegantly
-            </h2>
-            <p className="font-sans text-wood-muted text-sm leading-relaxed">
-              Explore our custom violin-themed imagery. At Harrogate Violin Studio, we blend disciplined, high-level music education with warm, creative inspiration.
-            </p>
-          </div>
+      {/* Media Gallery Section */}
+      <section className="py-16 px-6 bg-wood-beige border-t border-b border-wood-border">
+        <div className="max-w-6xl mx-auto">
+          {galleryItems.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              {galleryItems.map((src, index) => {
+                if (isVideo(src)) {
+                  return (
+                    <div 
+                      key={index} 
+                      className="bg-white border border-wood-border/60 rounded-sm overflow-hidden shadow-xs hover:shadow-md transition-all aspect-square flex items-center justify-center relative"
+                    >
+                      <video 
+                        src={src} 
+                        controls
+                        playsInline
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  );
+                }
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Card 1: Violin Lesson */}
-            <div className="bg-white border border-wood-border rounded-sm overflow-hidden shadow-xs hover:shadow-md transition-all group">
-              <div className="aspect-[4/3] overflow-hidden bg-wood-light relative">
-                <img 
-                  src={catViolinLesson} 
-                  alt="A kitten learning violin posture" 
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
-                />
-              </div>
-              <div className="p-5 space-y-2">
-                <span className="font-mono text-[9px] text-wood-sand font-bold uppercase tracking-wider">Foundation Training</span>
-                <h4 className="font-serif font-bold text-base text-wood-dark">The Joy of Learning</h4>
-                <p className="font-sans text-xs text-wood-muted leading-relaxed">
-                  Building perfect bow hold habits and secure physical posture right from the very first lesson.
-                </p>
-              </div>
+                return (
+                  <button 
+                    key={index} 
+                    onClick={() => setActiveImage(src)}
+                    className="bg-white border border-wood-border/60 rounded-sm overflow-hidden shadow-xs hover:shadow-md transition-all group aspect-square flex items-center justify-center relative cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-wood-sand"
+                  >
+                    <img 
+                      src={src} 
+                      alt={`Studio Gallery Thumbnail ${index + 1}`}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-102"
+                    />
+                  </button>
+                );
+              })}
             </div>
-
-            {/* Card 2: Solo Violinist */}
-            <div className="bg-white border border-wood-border rounded-sm overflow-hidden shadow-xs hover:shadow-md transition-all group">
-              <div className="aspect-[4/3] overflow-hidden bg-wood-light relative">
-                <img 
-                  src={catViolinist} 
-                  alt="A majestic cat playing violin" 
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
-                />
-              </div>
-              <div className="p-5 space-y-2">
-                <span className="font-mono text-[9px] text-wood-sand font-bold uppercase tracking-wider">Solo Artistry</span>
-                <h4 className="font-serif font-bold text-base text-wood-dark">Expressive Resonance</h4>
-                <p className="font-sans text-xs text-wood-muted leading-relaxed">
-                  Refining left-hand placement, pristine intonation, and high expressive dynamics for advanced classical works.
-                </p>
-              </div>
+          ) : (
+            <div className="text-center py-8 text-xs font-mono text-wood-muted uppercase tracking-wider">
+              No gallery media found in src/assets/homeGallery
             </div>
-
-            {/* Card 3: Orchestra */}
-            <div className="bg-white border border-wood-border rounded-sm overflow-hidden shadow-xs hover:shadow-md transition-all group">
-              <div className="aspect-[4/3] overflow-hidden bg-wood-light relative">
-                <img 
-                  src={catOrchestra} 
-                  alt="Cat violin orchestra in a grand hall" 
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
-                />
-              </div>
-              <div className="p-5 space-y-2">
-                <span className="font-mono text-[9px] text-wood-sand font-bold uppercase tracking-wider">Chamber Music</span>
-                <h4 className="font-serif font-bold text-base text-wood-dark">The Symphony of Ensemble</h4>
-                <p className="font-sans text-xs text-wood-muted leading-relaxed">
-                  Understanding shared pulse, dynamic blending, and deep collaborative musicianship in orchestral play.
-                </p>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </section>
 
+      {/* Image Lightbox Modal */}
+      {activeImage && (
+        <div 
+          className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn"
+          onClick={() => setActiveImage(null)}
+        >
+          <button 
+            onClick={() => setActiveImage(null)}
+            className="absolute top-4 right-4 text-white/70 hover:text-white bg-black/40 p-2 rounded-full transition-colors backdrop-blur-xs"
+          >
+            <X className="h-6 w-6" />
+          </button>
+          
+          <div 
+            className="max-w-4xl max-h-[85vh] flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img 
+              src={activeImage} 
+              alt="Enlarged Gallery Asset"
+              referrerPolicy="no-referrer"
+              className="max-w-full max-h-[85vh] object-contain rounded-xs shadow-2xl"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

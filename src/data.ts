@@ -120,7 +120,7 @@ export const STUDIO_INFO = {
   email: 'harrogateviolinstudio@gmail.com',
   phone: '07852718587',
   phoneDisplay: '+44 7852 718587',
-  address: 'Harrogate Studio, Harlow Hill Area, Harrogate, North Yorkshire, HG2',
+  address: 'Harlow Terrace, Harrogate, HG2',
   instagram: 'https://www.instagram.com/harrogateviolinstudio',
   googleFormUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSeyAYmcM4_6qulNJrpirzJqT4oTiKnoaBOxNTqtX4voyDvREg/viewform',
   coordinates: {

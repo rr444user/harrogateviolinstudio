@@ -35,7 +35,7 @@ export const FAQView: React.FC<FAQViewProps> = ({ setCurrentPage }) => {
             <span className="italic text-wood-sand">Questions</span>
           </h1>
           <p className="font-sans text-wood-muted text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
-            Everything you need to know about starting lessons, practice routines, instrument borrowing, and more.
+            Everything you need to know about starting lessons, instrument borrowing and more.
           </p>
         </div>
       </section>

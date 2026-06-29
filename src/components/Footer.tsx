@@ -15,9 +15,9 @@ export const Footer: React.FC<FooterProps> = ({ setCurrentPage }) => {
   };
 
   return (
-    <footer className="bg-wood-dark text-white border-t border-wood-border/10 pt-16 pb-12 font-sans">
+    <footer className="bg-wood-dark text-white border-t border-wood-border/10 pt-5 pb-5 font-sans">
       <div className="max-w-6xl mx-auto px-6 sm:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 pb-12 border-b border-wood-border/10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 border-wood-border/10">
           {/* Column 1: Contact Details */}
           <div className="space-y-4">
             <h3 className="font-serif text-sm tracking-wide text-wood-beige font-semibold">
@@ -51,7 +51,7 @@ export const Footer: React.FC<FooterProps> = ({ setCurrentPage }) => {
           {/* Column 2: Social Links */}
           <div className="flex flex-col items-start md:items-center justify-center space-y-4">
             <h3 className="font-serif text-sm tracking-wide text-wood-beige font-semibold self-start md:self-center">
-              Connect With Us
+              Follow Me
             </h3>
             <div className="flex space-x-4">
               <a
@@ -66,7 +66,7 @@ export const Footer: React.FC<FooterProps> = ({ setCurrentPage }) => {
               </a>
             </div>
             <p className="font-mono text-[10px] text-wood-beige/40 text-left md:text-center max-w-xs">
-              Follow us on Instagram for updates, student achievements, and studio moments.
+              Follow me on Instagram for updates and student achievements!
             </p>
           </div>
 
@@ -90,13 +90,6 @@ export const Footer: React.FC<FooterProps> = ({ setCurrentPage }) => {
           </div>
         </div>
 
-        {/* Lower Footer */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between font-mono text-[11px] text-wood-beige/30 gap-4">
-          <p>© {new Date().getFullYear()} Harrogate Violin Studio. All rights reserved.</p>
-          <p className="flex items-center space-x-1">
-            <span>Taught by Katherine Rosin in Harrogate, UK</span>
-          </p>
-        </div>
       </div>
     </footer>
   );

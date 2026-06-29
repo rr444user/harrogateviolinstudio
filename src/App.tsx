@@ -8,6 +8,7 @@ import { GalleryView } from './components/GalleryView';
 import { ContactView } from './components/ContactView';
 import { FAQView } from './components/FAQView';
 import { motion, AnimatePresence } from 'motion/react';
+import { CatMouseChaser } from './components/CatMouseChaser';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
@@ -68,6 +69,8 @@ export default function App() {
 
       {/* Footer Details block */}
       <Footer setCurrentPage={setCurrentPage} />
+
+      <CatMouseChaser />
     </div>
   );
 }

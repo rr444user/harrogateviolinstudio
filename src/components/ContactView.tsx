@@ -1,23 +1,35 @@
-import React, { useState } from 'react';
-import { STUDIO_INFO } from '../data';
-import { Mail, Phone, MapPin, Send, Instagram, ExternalLink, AlertCircle } from 'lucide-react';
-import emailjs from '@emailjs/browser';
+import React, { useState } from "react";
+import { STUDIO_INFO } from "../data";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Send,
+  Instagram,
+  ExternalLink,
+  AlertCircle,
+} from "lucide-react";
+import emailjs from "@emailjs/browser";
 
 export const ContactView: React.FC = () => {
   const [formData, setFormState] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    experience: 'beginner',
-    ageGroup: 'child',
-    message: ''
+    name: "",
+    email: "",
+    phone: "",
+    experience: "beginner",
+    ageGroup: "child",
+    message: "",
   });
 
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
     const { name, value } = e.target;
     setFormState((prev) => ({ ...prev, [name]: value }));
   };
@@ -27,76 +39,64 @@ export const ContactView: React.FC = () => {
     setLoading(true);
     setError(null);
 
-    const fullMessage = `
-Name: ${formData.name}
-Email: ${formData.email}
-Phone: ${formData.phone || 'N/A'}
-Experience Level: ${formData.experience}
-Age Group: ${formData.ageGroup}
-
-Message:
-${formData.message}
-`.trim();
-
     const templateParams = {
       from_name: formData.name,
       from_email: formData.email,
-      phone: formData.phone || 'N/A',
+      phone: formData.phone || "N/A",
       experience: formData.experience,
       age_group: formData.ageGroup,
-      message: fullMessage,
-      to_name: 'Katherine Rosin',
+      message: formData.message,
+      to_name: "Katherine Rosin",
     };
 
-    emailjs.send(
-      'service_mztebpl',
-      'template_6d6d3na',
-      templateParams,
-      '20uMEFVSKIzNT2jc5'
-    )
-    .then(() => {
-      setLoading(false);
-      setSubmitted(true);
-      
-      // Save submission backup to localStorage
-      const savedLeads = JSON.parse(localStorage.getItem('studio_leads') || '[]');
-      savedLeads.push({ ...formData, date: new Date().toISOString() });
-      localStorage.setItem('studio_leads', JSON.stringify(savedLeads));
-      
-      // Reset form fields
-      setFormState({
-        name: '',
-        email: '',
-        phone: '',
-        experience: 'beginner',
-        ageGroup: 'child',
-        message: ''
+    emailjs
+      .send(
+        "service_mztebpl",
+        "template_6d6d3na",
+        templateParams,
+        "20uMEFVSKIzNT2jc5",
+      )
+      .then(() => {
+        setLoading(false);
+        setSubmitted(true);
+
+        // Save submission backup to localStorage
+        const savedLeads = JSON.parse(
+          localStorage.getItem("studio_leads") || "[]",
+        );
+        savedLeads.push({ ...formData, date: new Date().toISOString() });
+        localStorage.setItem("studio_leads", JSON.stringify(savedLeads));
+
+        // Reset form fields
+        setFormState({
+          name: "",
+          email: "",
+          phone: "",
+          experience: "beginner",
+          ageGroup: "child",
+          message: "",
+        });
+      })
+      .catch((err) => {
+        console.error("EmailJS Error:", err);
+        setLoading(false);
+        setError(
+          "An error occurred while sending your message. Please verify your connection or email directly to katherinerosinfiddle@gmail.com",
+        );
       });
-    })
-    .catch((err) => {
-      console.error('EmailJS Error:', err);
-      setLoading(false);
-      setError('An error occurred while sending your message. Please verify your connection or email directly to katherinerosinfiddle@gmail.com');
-    });
   };
 
   return (
     <div className="animate-fadeIn">
       {/* Banner Header */}
-      <section 
-        className="relative bg-wood-beige text-wood-dark py-16 px-6 text-center border-b border-wood-border"
-      >
+      <section className="relative bg-wood-beige text-wood-dark py-16 px-6 text-center border-b border-wood-border">
         <div className="max-w-4xl mx-auto space-y-3 relative z-10">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-wood-sand font-bold">
-            Get In Touch
-          </span>
+
           <h1 className="font-serif font-normal text-3xl sm:text-5xl tracking-tight leading-tight">
-            Contact the Studio & <br />
-            <span className="italic text-wood-sand">Schedule a Trial</span>
+            Contact Me & <br />
+            <span className="italic text-wood-sand">Schedule a Trial Lesson</span>
           </h1>
-          <p className="font-sans text-wood-muted text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
-            Have questions or want to schedule an introductory lesson? Drop me a line, and let's start your violin journey.
-          </p>
+
         </div>
       </section>
 
@@ -104,7 +104,6 @@ ${formData.message}
       <section className="py-20 px-6 bg-wood-light">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-            
             {/* Left Column: Direct Info Panel */}
             <div className="lg:col-span-5 space-y-8">
               <div className="space-y-4">
@@ -115,40 +114,51 @@ ${formData.message}
                   Reach Out Directly
                 </h2>
                 <p className="font-sans text-wood-muted text-sm leading-relaxed">
-                  Feel free to send an email, give me a call, or submit the form. If you prefer the original Google Forms format, you can also submit your details directly to the official Google Form below!
+                  Feel free to send an email, give me a call, or submit the
+                  form.
                 </p>
               </div>
 
               {/* Quick Info Grid */}
               <div className="space-y-4 font-mono text-xs text-wood-muted">
-                <a 
+                <a
                   href={`mailto:${STUDIO_INFO.email}`}
                   className="flex items-center space-x-3 p-4 bg-white hover:bg-wood-beige/40 rounded-sm border border-wood-border shadow-xs transition-all"
                   id="direct-email-card"
                 >
                   <Mail className="h-5 w-5 text-wood-sand flex-shrink-0" />
                   <div>
-                    <span className="text-[10px] text-wood-muted block font-bold">Email Address</span>
-                    <span className="font-semibold text-wood-dark hover:underline break-all">{STUDIO_INFO.email}</span>
+                    <span className="text-[10px] text-wood-muted block font-bold">
+                      Email Address
+                    </span>
+                    <span className="font-semibold text-wood-dark hover:underline break-all">
+                      {STUDIO_INFO.email}
+                    </span>
                   </div>
                 </a>
 
-                <a 
+                <a
                   href={`tel:${STUDIO_INFO.phone}`}
                   className="flex items-center space-x-3 p-4 bg-white hover:bg-wood-beige/40 rounded-sm border border-wood-border shadow-xs transition-all"
                   id="direct-phone-card"
                 >
                   <Phone className="h-5 w-5 text-wood-sand flex-shrink-0" />
                   <div>
-                    <span className="text-[10px] text-wood-muted block font-bold">Phone Number</span>
-                    <span className="font-semibold text-wood-dark hover:underline">{STUDIO_INFO.phoneDisplay}</span>
+                    <span className="text-[10px] text-wood-muted block font-bold">
+                      Phone Number
+                    </span>
+                    <span className="font-semibold text-wood-dark hover:underline">
+                      {STUDIO_INFO.phoneDisplay}
+                    </span>
                   </div>
                 </a>
 
                 <div className="flex items-start space-x-3 p-4 bg-white rounded-sm border border-wood-border shadow-xs">
                   <MapPin className="h-5 w-5 text-wood-sand mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="text-[10px] text-wood-muted block font-bold">Studio Address</span>
+                    <span className="text-[10px] text-wood-muted block font-bold">
+                      Studio Address
+                    </span>
                     <span className="font-semibold text-wood-dark leading-normal">
                       {STUDIO_INFO.address}
                     </span>
@@ -161,11 +171,12 @@ ${formData.message}
                 <div className="flex items-center space-x-3">
                   <Instagram className="h-5 w-5 text-wood-sand" />
                   <h3 className="font-serif font-bold text-wood-dark text-base">
-                    Follow Studio Updates
+                    Follow Me
                   </h3>
                 </div>
                 <p className="font-sans text-xs text-wood-muted leading-relaxed">
-                  Join our musical community on Instagram to view student progress videos, performance snippets, and noticeboard details.
+                  Follow me on Instagram to view student
+                  progress videos, performance snippets, and updates.
                 </p>
                 <a
                   href={STUDIO_INFO.instagram}
@@ -182,10 +193,12 @@ ${formData.message}
 
             {/* Right Form Column */}
             <div className="lg:col-span-7 bg-white p-8 rounded-sm shadow-xs border border-wood-border space-y-6">
-              
               {submitted ? (
                 /* Success State */
-                <div className="text-center py-12 space-y-4 animate-scaleUp" id="form-success-state">
+                <div
+                  className="text-center py-12 space-y-4 animate-scaleUp"
+                  id="form-success-state"
+                >
                   <div className="inline-flex p-4 bg-wood-beige text-wood-sand rounded-full border border-wood-border">
                     <Send className="h-8 w-8" />
                   </div>
@@ -193,7 +206,8 @@ ${formData.message}
                     Thank You! Message Sent.
                   </h3>
                   <p className="font-sans text-xs sm:text-sm text-wood-muted max-w-sm mx-auto leading-relaxed">
-                    Katherine has received your message and will get back to you shortly (usually within 24 hours).
+                    Thanks so much for contacting me! 🎻<br />
+                    I've received your message, and I'll get back to you as soon as possible. 
                   </p>
                   <button
                     onClick={() => setSubmitted(false)}
@@ -205,14 +219,15 @@ ${formData.message}
                 </div>
               ) : (
                 /* Native Interactive Form */
-                <form onSubmit={handleFormSubmit} className="space-y-6" id="violin-contact-form">
+                <form
+                  onSubmit={handleFormSubmit}
+                  className="space-y-6"
+                  id="violin-contact-form"
+                >
                   <div className="space-y-1">
                     <h3 className="font-serif font-bold text-lg text-wood-dark">
-                      Inquiry & Trial Booking Form
+                      Inquiry Form
                     </h3>
-                    <p className="font-sans text-xs text-wood-muted">
-                      All fields are protected, and private data is strictly confidential.
-                    </p>
                   </div>
 
                   {error && (
@@ -225,7 +240,10 @@ ${formData.message}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Your Full Name */}
                     <div className="space-y-1">
-                      <label htmlFor="name" className="font-mono text-[9px] uppercase tracking-widest text-wood-muted font-bold block">
+                      <label
+                        htmlFor="name"
+                        className="font-mono text-[9px] uppercase tracking-widest text-wood-muted font-bold block"
+                      >
                         Your Full Name *
                       </label>
                       <input
@@ -242,7 +260,10 @@ ${formData.message}
 
                     {/* Email Address */}
                     <div className="space-y-1">
-                      <label htmlFor="email" className="font-mono text-[9px] uppercase tracking-widest text-wood-muted font-bold block">
+                      <label
+                        htmlFor="email"
+                        className="font-mono text-[9px] uppercase tracking-widest text-wood-muted font-bold block"
+                      >
                         Email Address *
                       </label>
                       <input
@@ -261,7 +282,10 @@ ${formData.message}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {/* Phone Number */}
                     <div className="space-y-1 sm:col-span-1">
-                      <label htmlFor="phone" className="font-mono text-[9px] uppercase tracking-widest text-wood-muted font-bold block">
+                      <label
+                        htmlFor="phone"
+                        className="font-mono text-[9px] uppercase tracking-widest text-wood-muted font-bold block"
+                      >
                         Phone Number
                       </label>
                       <input
@@ -277,7 +301,10 @@ ${formData.message}
 
                     {/* Student Age Category */}
                     <div className="space-y-1 sm:col-span-1">
-                      <label htmlFor="ageGroup" className="font-mono text-[9px] uppercase tracking-widest text-wood-muted font-bold block">
+                      <label
+                        htmlFor="ageGroup"
+                        className="font-mono text-[9px] uppercase tracking-widest text-wood-muted font-bold block"
+                      >
                         Student Age
                       </label>
                       <select
@@ -295,7 +322,10 @@ ${formData.message}
 
                     {/* Student Experience */}
                     <div className="space-y-1 sm:col-span-1">
-                      <label htmlFor="experience" className="font-mono text-[9px] uppercase tracking-widest text-wood-muted font-bold block">
+                      <label
+                        htmlFor="experience"
+                        className="font-mono text-[9px] uppercase tracking-widest text-wood-muted font-bold block"
+                      >
                         Experience Level
                       </label>
                       <select
@@ -306,7 +336,9 @@ ${formData.message}
                         className="w-full px-4 py-3 rounded-sm border border-wood-border bg-wood-light focus:outline-none focus:ring-1 focus:ring-wood-sand font-sans text-xs sm:text-sm text-wood-dark"
                       >
                         <option value="beginner">Complete Beginner</option>
-                        <option value="intermediate">Intermediate (Grades 1-5)</option>
+                        <option value="intermediate">
+                          Intermediate (Grades 1-5)
+                        </option>
                         <option value="advanced">Advanced (Grades 6-8+)</option>
                       </select>
                     </div>
@@ -314,7 +346,10 @@ ${formData.message}
 
                   {/* Message */}
                   <div className="space-y-1">
-                    <label htmlFor="message" className="font-mono text-[9px] uppercase tracking-widest text-wood-muted font-bold block">
+                    <label
+                      htmlFor="message"
+                      className="font-mono text-[9px] uppercase tracking-widest text-wood-muted font-bold block"
+                    >
                       Your Message or Inquiry Details *
                     </label>
                     <textarea
@@ -373,7 +408,6 @@ ${formData.message}
                 </form>
               )}
             </div>
-
           </div>
         </div>
       </section>

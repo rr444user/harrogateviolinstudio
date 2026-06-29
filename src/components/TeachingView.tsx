@@ -46,7 +46,7 @@ export const TeachingView: React.FC<TeachingViewProps> = ({ setCurrentPage }) =>
             Pedagogical Experience
           </span>
           <h1 className="font-serif font-normal text-3xl sm:text-5xl tracking-tight leading-tight">
-            Teaching Philosophy & <br />
+            Teaching Ethos & <br />
             <span className="italic text-wood-sand">Studio Curriculum</span>
           </h1>
           <p className="font-sans text-wood-muted text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
@@ -150,62 +150,9 @@ export const TeachingView: React.FC<TeachingViewProps> = ({ setCurrentPage }) =>
         </div>
       </section>
 
-      {/* Lesson Structures */}
-      <section className="bg-wood-beige py-20 px-6 border-t border-b border-wood-border">
-        <div className="max-w-6xl mx-auto space-y-12">
-          <div className="text-center space-y-3">
-            <span className="font-mono text-xs uppercase tracking-widest text-wood-sand font-bold">
-              Time Commitment
-            </span>
-            <h2 className="font-serif font-bold text-2xl sm:text-3xl md:text-4xl text-wood-dark tracking-tight">
-              Curriculum & Lesson Structures
-            </h2>
-            <p className="font-sans text-wood-muted text-sm sm:text-base max-w-xl mx-auto">
-              Choose a structure that perfectly mirrors student goals, age, and schedule.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {lessonStructures.map((structure, index) => (
-              <div 
-                key={index}
-                className="bg-white p-8 rounded-sm shadow-xs border border-wood-border flex flex-col justify-between space-y-6"
-              >
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center border-b border-wood-beige pb-3">
-                    <h3 className="font-serif text-lg font-bold text-wood-sand tracking-tight">
-                      {structure.duration}
-                    </h3>
-                  </div>
-                  
-                  <p className="font-sans text-xs font-bold text-wood-dark italic">
-                    {structure.recommendation}
-                  </p>
-                  
-                  <p className="font-sans text-xs text-wood-muted leading-relaxed">
-                    {structure.focus}
-                  </p>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="h-[1px] bg-wood-border"></div>
-                  <ul className="space-y-2 font-sans text-xs text-wood-muted">
-                    {structure.benefits.map((b, i) => (
-                      <li key={i} className="flex items-center space-x-2">
-                        <span className="w-1.5 h-1.5 bg-wood-sand rounded-full flex-shrink-0" />
-                        <span>{b}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Map Embed Section & Location Details */}
-      <section className="py-20 px-6 bg-wood-light">
+      <section className="bg-wood-beige py-20 px-6 border-t border-b border-wood-border">
+
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
