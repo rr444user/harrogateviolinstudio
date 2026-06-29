@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: "Fira Code", ui-monospace, SFMono-Regular, monospace;
+  
+  /* Professional Polish Theme Palette */
+  --color-wood-dark: #2D2926;    /* Slate Black / Primary Text */
+  --color-wood-sand: #8B4513;    /* Saddle Brown / Violin Accent */
+  --color-wood-brown: #6F370F;   /* Dark Saddle Brown / Hover State */
+  --color-wood-light: #FAF9F6;   /* Alabaster / Body Backdrop */
+  --color-wood-beige: #F1EDE4;   /* Cream Wood / Secondary Accent Background */
+  --color-wood-border: #E5E2D9;  /* Soft Paper / Elegant Borders */
+  --color-wood-muted: #6B6359;   /* Warm Gray / Muted Subtext */
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--color-wood-light);
+  color: var(--color-wood-dark);
+}
+
+body {
+  background-color: var(--color-wood-light);
+}
+
+/* Custom modern scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-wood-light);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-wood-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-wood-sand);
+}
+
+/* Smooth transitions on interactive items */
+a, button {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+

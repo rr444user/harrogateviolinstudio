@@ -1,0 +1,6 @@
+{
+  "name": "Harrogate Violin Studio",
+  "description": "Private violin tuition in Harrogate and online for all ages and abilities, taught by Katherine Rosin.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
