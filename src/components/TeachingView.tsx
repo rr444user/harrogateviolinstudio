@@ -3,6 +3,7 @@ import { Page } from '../types';
 import { STUDIO_INFO } from '../data';
 import { Calendar, HelpCircle, MapPin, CheckCircle, BookOpen, Music, Shield } from 'lucide-react';
 import { BannerHeader } from './BannerHeader'; 
+import bannerBackground from "../assets/images/banners/catbanner.jpg";
 
 interface TeachingViewProps {
   setCurrentPage: (page: Page) => void;
@@ -42,6 +43,7 @@ export const TeachingView: React.FC<TeachingViewProps> = ({ setCurrentPage }) =>
       <BannerHeader 
         title="Teaching Ethos & "
         titleItalic="My lessons"
+        backgroundImage={bannerBackground}
       />
 
       {/* Main Philosophy & Background */}

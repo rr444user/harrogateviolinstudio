@@ -3,6 +3,7 @@ import { Page } from '../types';
 import { FAQ_ITEMS } from '../data';
 import { HelpCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { BannerHeader } from './BannerHeader'; 
+import bannerBackground from "../assets/images/banners/catbanner.jpg";
 
 interface FAQViewProps {
   setCurrentPage: (page: Page) => void;
@@ -27,6 +28,7 @@ export const FAQView: React.FC<FAQViewProps> = ({ setCurrentPage }) => {
       <BannerHeader 
         title="Frequently Asked"
         titleItalic="Questions"
+        backgroundImage={bannerBackground}
       />
 
       {/* Accordions List Section */}

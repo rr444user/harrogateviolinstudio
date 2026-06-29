@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { STUDIO_INFO } from "../data";
 import { BannerHeader } from './BannerHeader'; 
+import bannerBackground from "../assets/images/banners/catbanner.jpg";
 
 import {
   Mail,
@@ -94,6 +95,7 @@ export const ContactView: React.FC = () => {
       <BannerHeader 
         title="Contact Me & "
         titleItalic="Schedule a Trial Lesson"
+        backgroundImage={bannerBackground}
       />
 
       {/* Main Form & Contact Section */}

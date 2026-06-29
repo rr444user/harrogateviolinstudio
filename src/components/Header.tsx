@@ -20,9 +20,8 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage }) =
     window.addEventListener('scroll', handleScroll);
     handleScroll(); // Check immediately
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [currentPage]);
 
-  const isHome = currentPage === 'home';
   const isTransparent = !isScrolled;
 
   const navItems: { label: string; page: Page }[] = [
@@ -53,7 +52,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage }) =
             <div className="flex items-center">
               <button
                 onClick={() => handleNavClick('home')}
-                className="flex items-center space-x-3 group text-left focus:outline-none"
+                className={`flex items-center space-x-3 group text-left focus:outline-none`}
                 id="header-logo-btn"
               >
                 <div className="h-12 flex items-center justify-center transition-all group-hover:scale-105">
@@ -135,18 +134,15 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage }) =
         </div>
       </header>
 
-      {/* Mobile Drawer Slide-out (Moved outside <header> and isolated with z-50) */}
+      {/* Mobile Drawer Slide-out */}
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex justify-end" id="mobile-navigation-drawer">
-          {/* Backdrop overlay */}
           <div
             className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity"
             onClick={() => setMobileMenuOpen(false)}
           ></div>
 
-          {/* Drawer content panel (Aligned Right) */}
           <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white pt-5 pb-4 border-l border-wood-border">
-            {/* Close button shifted left relative to container */}
             <div className="absolute top-0 left-0 -ml-12 pt-2">
               <button
                 onClick={() => setMobileMenuOpen(false)}

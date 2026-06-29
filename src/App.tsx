@@ -8,12 +8,82 @@ import { GalleryView } from './components/GalleryView';
 import { ContactView } from './components/ContactView';
 import { FAQView } from './components/FAQView';
 import { motion, AnimatePresence } from 'motion/react';
-import { CatMouseChaser } from './components/CatMouseChaser';
+
+declare global {
+  interface Window {
+    createNeko?: (options: any) => {
+      start: () => void;
+      stop: () => void;
+      destroy: () => void;
+    };
+  }
+}
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
 
-  // Handle URL hash navigation on initial load & popstate (browser back/forward)
+  // Handle Neko.js Initialization and Cleanup
+  useEffect(() => {
+    let nekoInstance: any = null;
+    const scriptId = 'neko-script-singleton';
+    
+    // Find an existing script element or create a new one
+    let script = document.getElementById(scriptId) as HTMLScriptElement | null;
+    let isScriptNew = false;
+
+    if (!script) {
+      script = document.createElement('script');
+      script.id = scriptId;
+      script.src = "https://louisabraham.github.io/nekojs/neko.js";
+      script.async = true;
+      isScriptNew = true;
+    }
+
+    // Single initialization function to guarantee only one runner attaches
+    const initNeko = () => {
+      // Check if a cat sprite already exists in the DOM to prevent stacking
+      const existingCat = document.getElementById('oneko') || document.querySelector('.neko'); 
+      if (existingCat) return; 
+
+      if (window.createNeko) {
+        nekoInstance = window.createNeko({
+          speed: 24,
+          fps: 120,
+          behaviorMode: 0,
+          idleThreshold: 6,
+          allowBehaviorChange: true,
+          startX: window.innerWidth / 2,
+          startY: window.innerHeight / 2
+        });
+        nekoInstance.start();
+      }
+    };
+
+    if (window.createNeko) {
+      // If script is already cached/loaded globally, run setup immediately
+      initNeko();
+    } else {
+      // Otherwise wait for the script block to load cleanly
+      script.addEventListener('load', initNeko);
+    }
+
+    if (isScriptNew) {
+      document.body.appendChild(script);
+    }
+
+    // Cleanup phase
+    return () => {
+      if (nekoInstance) {
+        nekoInstance.stop();
+        nekoInstance.destroy();
+      }
+      if (script) {
+        script.removeEventListener('load', initNeko);
+      }
+    };
+  }, []);
+
+  // Handle URL hash navigation
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '') as Page;
@@ -25,35 +95,27 @@ export default function App() {
       }
     };
 
-    handleHashChange(); // Run once on mount
+    handleHashChange();
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
   const renderActiveView = () => {
     switch (currentPage) {
-      case 'home':
-        return <HomeView setCurrentPage={setCurrentPage} />;
-      case 'teaching':
-        return <TeachingView setCurrentPage={setCurrentPage} />;
-      case 'gallery':
-        return <GalleryView setCurrentPage={setCurrentPage} />;
-      case 'contact':
-        return <ContactView />;
-      case 'faq':
-        return <FAQView setCurrentPage={setCurrentPage} />;
-      default:
-        return <HomeView setCurrentPage={setCurrentPage} />;
+      case 'home': return <HomeView setCurrentPage={setCurrentPage} />;
+      case 'teaching': return <TeachingView setCurrentPage={setCurrentPage} />;
+      case 'gallery': return <GalleryView setCurrentPage={setCurrentPage} />;
+      case 'contact': return <ContactView />;
+      case 'faq': return <FAQView setCurrentPage={setCurrentPage} />;
+      default: return <HomeView setCurrentPage={setCurrentPage} />;
     }
   };
 
   return (
     <div className="flex flex-col min-h-screen bg-[#fdfbf7]">
-      {/* Header / Sticky Navigation Bar */}
       <Header currentPage={currentPage} setCurrentPage={setCurrentPage} />
 
-      {/* Main Page Content Wrapper with Animated transitions */}
-      <main className={`flex-grow ${currentPage !== 'home' ? 'pt-20' : ''}`}>
+      <main>
         <AnimatePresence mode="wait">
           <motion.div
             key={currentPage}
@@ -67,10 +129,8 @@ export default function App() {
         </AnimatePresence>
       </main>
 
-      {/* Footer Details block */}
       <Footer setCurrentPage={setCurrentPage} />
 
-      <CatMouseChaser />
     </div>
   );
 }
