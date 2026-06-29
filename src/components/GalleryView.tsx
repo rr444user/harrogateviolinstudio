@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Page } from '../types';
 import { Award, Instagram, ZoomIn } from 'lucide-react';
+import { BannerHeader } from './BannerHeader'; 
 
 // Import all real certificate images from assets
 import certx from '../assets/images/exam/certx.jpg';
@@ -56,21 +57,12 @@ export const GalleryView: React.FC<GalleryViewProps> = ({ setCurrentPage }) => {
 
   return (
     <div className="animate-fadeIn">
-      {/* Banner Header */}
-      <section className="relative bg-wood-beige text-wood-dark py-16 px-6 text-center border-b border-wood-border">
-        <div className="max-w-4xl mx-auto space-y-3 relative z-10">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-wood-sand font-bold">
-            Studio Gallery & Success
-          </span>
-          <h1 className="font-serif font-normal text-3xl sm:text-5xl tracking-tight leading-tight">
-            Life at the Studio & <br />
-            <span className="italic text-wood-sand">Success Stories</span>
-          </h1>
-          <p className="font-sans text-wood-muted text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
-            Take a look inside Harrogate Violin Studio, check our real-time Instagram updates, and view student board exam achievements.
-          </p>
-        </div>
-      </section>
+
+      <BannerHeader 
+        title="Life at the Studio & "
+        titleItalic="My lessons"
+      />
+      
 
       {/* Tab Selector */}
       <div className="bg-white border-b border-wood-border sticky top-20 z-20">
@@ -103,7 +95,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({ setCurrentPage }) => {
       </div>
 
       {/* Main Grid Section */}
-      <section className="py-16 px-6 bg-wood-light min-h-[500px]">
+      <section className="p-5 sm:py-20 sm:px-6 bg-wood-light">
         <div className="max-w-6xl mx-auto space-y-12 animate-fadeIn">
 
           {activeTab === 'instagram' ? (

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { STUDIO_INFO } from "../data";
+import { BannerHeader } from './BannerHeader'; 
+
 import {
   Mail,
   Phone,
@@ -88,20 +90,14 @@ export const ContactView: React.FC = () => {
 
   return (
     <div className="animate-fadeIn">
-      {/* Banner Header */}
-      <section className="relative bg-wood-beige text-wood-dark py-16 px-6 text-center border-b border-wood-border">
-        <div className="max-w-4xl mx-auto space-y-3 relative z-10">
 
-          <h1 className="font-serif font-normal text-3xl sm:text-5xl tracking-tight leading-tight">
-            Contact Me & <br />
-            <span className="italic text-wood-sand">Schedule a Trial Lesson</span>
-          </h1>
-
-        </div>
-      </section>
+      <BannerHeader 
+        title="Contact Me & "
+        titleItalic="Schedule a Trial Lesson"
+      />
 
       {/* Main Form & Contact Section */}
-      <section className="py-20 px-6 bg-wood-light">
+      <section className="p-5 sm:py-20 sm:px-6 bg-wood-light">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
             {/* Left Column: Direct Info Panel */}

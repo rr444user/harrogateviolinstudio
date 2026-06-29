@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Page } from '../types';
 import { FAQ_ITEMS } from '../data';
-import { HelpCircle, ChevronDown, ChevronUp, MessageCircle } from 'lucide-react';
+import { HelpCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { BannerHeader } from './BannerHeader'; 
 
 interface FAQViewProps {
   setCurrentPage: (page: Page) => void;
@@ -22,26 +23,14 @@ export const FAQView: React.FC<FAQViewProps> = ({ setCurrentPage }) => {
 
   return (
     <div className="animate-fadeIn">
-      {/* Banner Header */}
-      <section 
-        className="relative bg-wood-beige text-wood-dark py-16 px-6 text-center border-b border-wood-border"
-      >
-        <div className="max-w-4xl mx-auto space-y-3 relative z-10">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-wood-sand font-bold">
-            Got Questions?
-          </span>
-          <h1 className="font-serif font-normal text-3xl sm:text-5xl tracking-tight leading-tight">
-            Frequently Asked <br />
-            <span className="italic text-wood-sand">Questions</span>
-          </h1>
-          <p className="font-sans text-wood-muted text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
-            Everything you need to know about starting lessons, instrument borrowing and more.
-          </p>
-        </div>
-      </section>
+
+      <BannerHeader 
+        title="Frequently Asked"
+        titleItalic="Questions"
+      />
 
       {/* Accordions List Section */}
-      <section className="py-20 px-6 bg-wood-light">
+      <section className="p-5 sm:py-20 sm:px-6 bg-wood-light">
         <div className="max-w-3xl mx-auto space-y-12">
           
           <div className="text-center space-y-3">
@@ -64,7 +53,6 @@ export const FAQView: React.FC<FAQViewProps> = ({ setCurrentPage }) => {
                   key={faq.id}
                   className="bg-white rounded-sm border border-wood-border overflow-hidden hover:border-wood-sand transition-all shadow-xs"
                 >
-                  {/* Collapsible Trigger Header */}
                   <button
                     onClick={() => toggleFAQ(faq.id)}
                     className="w-full flex items-center justify-between p-5 text-left font-serif font-bold text-wood-dark hover:text-wood-sand focus:outline-none transition-colors"
@@ -81,7 +69,6 @@ export const FAQView: React.FC<FAQViewProps> = ({ setCurrentPage }) => {
                     </span>
                   </button>
 
-                  {/* Collapsible Answer Body */}
                   {isOpen && (
                     <div className="px-5 pb-5 pt-2 border-t border-wood-beige bg-wood-beige/10 animate-slideDown" id={`faq-panel-${faq.id}`}>
                       <p className="font-sans text-xs sm:text-sm text-wood-muted leading-relaxed whitespace-pre-line">

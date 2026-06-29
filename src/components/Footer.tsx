@@ -65,9 +65,6 @@ export const Footer: React.FC<FooterProps> = ({ setCurrentPage }) => {
                 <Instagram className="h-5 w-5" />
               </a>
             </div>
-            <p className="font-mono text-[10px] text-wood-beige/40 text-left md:text-center max-w-xs">
-              Follow me on Instagram for updates and student achievements!
-            </p>
           </div>
 
           {/* Column 3: Quick Navigation */}

@@ -2,6 +2,7 @@ import React from 'react';
 import { Page } from '../types';
 import { STUDIO_INFO } from '../data';
 import { Calendar, HelpCircle, MapPin, CheckCircle, BookOpen, Music, Shield } from 'lucide-react';
+import { BannerHeader } from './BannerHeader'; 
 
 interface TeachingViewProps {
   setCurrentPage: (page: Page) => void;
@@ -37,26 +38,14 @@ export const TeachingView: React.FC<TeachingViewProps> = ({ setCurrentPage }) =>
 
   return (
     <div className="animate-fadeIn">
-      {/* Banner Header */}
-      <section 
-        className="relative bg-wood-beige text-wood-dark py-16 px-6 text-center border-b border-wood-border"
-      >
-        <div className="max-w-4xl mx-auto space-y-3 relative z-10">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-wood-sand font-bold">
-            Pedagogical Experience
-          </span>
-          <h1 className="font-serif font-normal text-3xl sm:text-5xl tracking-tight leading-tight">
-            Teaching Ethos & <br />
-            <span className="italic text-wood-sand">Studio Curriculum</span>
-          </h1>
-          <p className="font-sans text-wood-muted text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
-            Building solid physical posture, elegant tone production, and independent musical self-correction.
-          </p>
-        </div>
-      </section>
+
+      <BannerHeader 
+        title="Teaching Ethos & "
+        titleItalic="My lessons"
+      />
 
       {/* Main Philosophy & Background */}
-      <section className="py-20 px-6 bg-wood-light">
+      <section className="p-5 sm:py-20 sm:px-6 bg-wood-light">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           
           {/* Main Bio/Philosophy Content Column */}
