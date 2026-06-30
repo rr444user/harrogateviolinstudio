@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Page } from './types';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
@@ -19,15 +19,59 @@ declare global {
   }
 }
 
+interface TrailItem {
+  id: number;
+  x: number;
+  y: number;
+  char: string;
+}
+
 export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
+  const [mouseTrail, setMouseTrail] = useState<TrailItem[]>([]);
+
+  // Track last coordinate mapping for visual trail calculations
+  const lastMousePos = useRef({ x: 0, y: 0, time: 0 });
+
+  // Handle Violin / Musical Symbol Mouse Trail
+  useEffect(() => {
+    const symbols = ["♩", "♪", "♫", "♬", "𝄞", "𝄢"];
+    let idCounter = 0;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const now = Date.now();
+      const currentX = e.clientX;
+      const currentY = e.clientY;
+
+      // Track last coordinates
+      lastMousePos.current = { x: currentX, y: currentY, time: now };
+
+      // Generate the visual trail symbols
+      if (Math.random() > 0.25) return;
+
+      const newItem: TrailItem = {
+        id: idCounter++,
+        x: currentX,
+        y: currentY,
+        char: symbols[Math.floor(Math.random() * symbols.length)],
+      };
+
+      setMouseTrail((prev) => [...prev, newItem]);
+
+      setTimeout(() => {
+        setMouseTrail((prev) => prev.filter((item) => item.id !== newItem.id));
+      }, 800);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   // Handle Neko.js Initialization and Cleanup
   useEffect(() => {
     let nekoInstance: any = null;
     const scriptId = 'neko-script-singleton';
     
-    // Find an existing script element or create a new one
     let script = document.getElementById(scriptId) as HTMLScriptElement | null;
     let isScriptNew = false;
 
@@ -39,18 +83,16 @@ export default function App() {
       isScriptNew = true;
     }
 
-    // Single initialization function to guarantee only one runner attaches
     const initNeko = () => {
-      // Check if a cat sprite already exists in the DOM to prevent stacking
       const existingCat = document.getElementById('oneko') || document.querySelector('.neko'); 
       if (existingCat) return; 
 
       if (window.createNeko) {
         nekoInstance = window.createNeko({
-          speed: 24,
+          speed: 54,
           fps: 120,
-          behaviorMode: 0,
-          idleThreshold: 6,
+          behaviorMode: 1,
+          idleThreshold: 2,
           allowBehaviorChange: true,
           startX: window.innerWidth / 2,
           startY: window.innerHeight / 2
@@ -60,10 +102,8 @@ export default function App() {
     };
 
     if (window.createNeko) {
-      // If script is already cached/loaded globally, run setup immediately
       initNeko();
     } else {
-      // Otherwise wait for the script block to load cleanly
       script.addEventListener('load', initNeko);
     }
 
@@ -71,7 +111,6 @@ export default function App() {
       document.body.appendChild(script);
     }
 
-    // Cleanup phase
     return () => {
       if (nekoInstance) {
         nekoInstance.stop();
@@ -112,7 +151,41 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#fdfbf7]">
+    <div className="flex flex-col min-h-screen bg-[#fdfbf7] relative">
+      
+      {/* Global CSS Inject for Mouse Trail Animation */}
+      <style>{`
+        @keyframes musicalTrailFade {
+          0% {
+            transform: translate(-50%, -50%) scale(0.6) translateY(0px) rotate(0deg);
+            opacity: 0.8;
+          }
+          100% {
+            transform: translate(-50%, -50%) scale(1.1) translateY(-20px) rotate(15deg);
+            opacity: 0;
+          }
+        }
+        .animate-music-trail {
+          animation: musicalTrailFade 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+      `}</style>
+
+      {/* Interactive Music Trail Layer */}
+      <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
+        {mouseTrail.map((item) => (
+          <span
+            key={item.id}
+            className="absolute font-serif text-[#C29B68] text-base sm:text-lg select-none mix-blend-multiply filter drop-shadow-[0_0_1px_rgba(253,251,247,0.8)] animate-music-trail"
+            style={{
+              left: item.x,
+              top: item.y,
+            }}
+          >
+            {item.char}
+          </span>
+        ))}
+      </div>
+
       <Header currentPage={currentPage} setCurrentPage={setCurrentPage} />
 
       <main>

@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Page } from "../types";
 import { Award, BookOpen, Clock, Music2, ArrowRight, X } from "lucide-react";
 import catBanner from "../assets/images/banners/catbanner.jpg";
 import profileImage from "../assets/images/profile.png";
 
-// Dynamically import all images and videos from the homeGallery folder
+// Import your sound files here (or use absolute string URLs below)
+import eNote from "../assets/strings/Violin Tuner E String.mp3";
+import aNote from "../assets/strings/Violin Tuner A String.mp3";
+import dNote from "../assets/strings/Violin Tuner D String.mp3";
+import gNote from "../assets/strings/Violin Tuner G String.mp3";
+
 const galleryModules = import.meta.glob(
   "../assets/homeGallery/*.{png,jpg,jpeg,svg,mp4,webm}",
   { eager: true },
@@ -17,8 +22,137 @@ interface HomeViewProps {
   setCurrentPage: (page: Page) => void;
 }
 
+interface FloatingNote {
+  id: number;
+  char: string;
+  x: number; 
+  y: number; 
+  delay: number;
+  scale: number;
+  rotation: number;
+}
+
+const VIOLIN_STRINGS = ["E", "A", "D", "G"];
+// Map each string to its audio file path
+const STRING_SOUNDS: Record<string, string> = {
+  E: eNote,
+  A: aNote,
+  D: dNote,
+  G: gNote,
+};
+
 export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
   const [activeImage, setActiveImage] = useState<string | null>(null);
+  
+  // Easter egg states
+  const [clickCount, setClickCount] = useState(0);
+  const [isFinalEggActive, setIsFinalEggActive] = useState(false);
+  const [activeStringLetter, setActiveStringLetter] = useState<string | null>(null);
+  const [floatingNotes, setFloatingNotes] = useState<FloatingNote[]>([]);
+  const [burstKey, setBurstKey] = useState(0); 
+  
+  const clickTimer = useRef<NodeJS.Timeout | null>(null);
+  const resetTimer = useRef<NodeJS.Timeout | null>(null);
+  const activeAudio = useRef<HTMLAudioElement | null>(null);
+  const audioStopTimer = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://cdn.featurable.com/widget/v2/embed.js";
+    script.defer = true;
+    script.charset = "UTF-8";
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  const handleProfileClick = () => {
+  setClickCount((prev) => {
+    const nextCount = prev + 1;
+    const currentString = VIOLIN_STRINGS[prev] || VIOLIN_STRINGS[0];
+    
+    if (clickTimer.current) clearTimeout(clickTimer.current);
+    
+    // Play the matching violin note audio
+    const audioPath = STRING_SOUNDS[currentString];
+    if (audioPath) {
+      const audio = new Audio(audioPath);
+      audio.volume = 1.0; // Start at full volume
+      audio.currentTime = 0; 
+      
+      audio.play()
+        .then(() => {
+          // Set a timeout to start the fade out after 9 seconds (so it finishes by 10s)
+          setTimeout(() => {
+            const fadeInterval = setInterval(() => {
+              // Decrease volume by 0.1 every 100ms (takes 1 second total)
+              if (audio.volume > 0.1) {
+                audio.volume = Math.max(0, audio.volume - 0.1);
+              } else {
+                // Once it hits 0, stop the interval and pause the audio completely
+                clearInterval(fadeInterval);
+                audio.pause();
+                audio.currentTime = 0;
+              }
+            }, 100);
+          }, 9000); // Wait 9 seconds before starting the 1-second fade down
+        })
+        .catch((err) => console.log("Audio playback blocked or failed:", err));
+    }
+    
+    triggerStringEffect(currentString, nextCount === 4);
+    
+    if (nextCount === 4) {
+      return 0; 
+    }
+    
+    clickTimer.current = setTimeout(() => {
+      setClickCount(0);
+    }, 3000);
+    
+    return nextCount;
+  });
+};
+
+  const triggerStringEffect = (stringLetter: string, isFinal: boolean) => {
+    if (resetTimer.current) clearTimeout(resetTimer.current);
+    
+    setBurstKey(prev => prev + 1);
+    
+    const notes = ["♩", "♪", "♫", "♬", "𝄞", "𝄢"];
+    setActiveStringLetter(stringLetter);
+    setIsFinalEggActive(isFinal);
+
+    const numNotes = isFinal ? 42 : 16;
+    
+    // --- CHANGE THROW DISTANCE PIXELS HERE ---
+    const maxRadius = isFinal ? 210 : 190; 
+    
+    const newNotes = Array.from({ length: numNotes }).map((_, i) => {
+      const angleInRadians = ((360 / numNotes) * i * Math.PI) / 180;
+      const distance = maxRadius * (0.85 + Math.random() * 0.25);
+      
+      return {
+        id: i, 
+        char: notes[Math.floor(Math.random() * notes.length)],
+        x: Math.cos(angleInRadians) * distance,
+        y: Math.sin(angleInRadians) * distance,
+        delay: isFinal ? Math.random() * 0.35 : Math.random() * 0.1,
+        scale: (isFinal ? 1.4 : 0.9) + Math.random() * 0.5,
+        rotation: Math.random() * 50 - 25,
+      };
+    });
+    
+    setFloatingNotes(newNotes);
+
+    resetTimer.current = setTimeout(() => {
+      setIsFinalEggActive(false);
+      setFloatingNotes([]);
+      setActiveStringLetter(null);
+    }, isFinal ? 3000 : 1800);
+  };
 
   const handleContactClick = () => {
     setCurrentPage("contact");
@@ -37,7 +171,57 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
   };
 
   return (
-    <div className="animate-fadeIn">
+    <div className="animate-fadeIn relative">
+      <style>{`
+        @keyframes radialBurstAnimation {
+          0% { 
+            transform: translate(-50%, -50%) translate(0px, 0px) scale(0.2) rotate(0deg); 
+            opacity: 0;
+          }
+          12% { 
+            opacity: 1;
+            filter: drop-shadow(0 0 8px rgba(194,155,104,0.95));
+          }
+          80% {
+            opacity: 1;
+          }
+          100% { 
+            transform: translate(-50%, -50%) translate(var(--target-x), var(--target-y)) scale(var(--scale)) rotate(var(--rot)); 
+            opacity: 0;
+          }
+        }
+        
+        @keyframes letterFadeUpAnimation {
+          0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0; filter: blur(2px); }
+          15% { transform: translate(-50%, -50%) scale(1.25); opacity: 1; filter: blur(0px); }
+          50% { transform: translate(-50%, -50%) scale(1.0); opacity: 1; }
+          100% { transform: translate(-50%, -50%) scale(0.85); opacity: 0; }
+        }
+
+        @keyframes goldenRayGlow {
+          0% { transform: translate(-50%, -50%) scale(0.75); opacity: 0; }
+          10% { opacity: 0.55; }
+          75% { opacity: 0.35; transform: translate(-50%, -50%) scale(1.25); }
+          100% { opacity: 0; transform: translate(-50%, -50%) scale(1.35); }
+        }
+
+        .animate-radial-burst {
+          animation: radialBurstAnimation 2.2s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+        }
+        
+        .animate-letter-fade {
+          animation: letterFadeUpAnimation 2s ease-in-out forwards;
+        }
+
+        .animate-ray-glow {
+          animation: goldenRayGlow 2.2s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+        }
+        
+        .string-letter-shadow {
+          text-shadow: 0 0 20px rgba(194, 155, 104, 0.95), 0 0 40px rgba(194, 155, 104, 0.6);
+        }
+      `}</style>
+
       {/* Hero Banner Section */}
       <section className="relative bg-[#0a0603] text-white overflow-hidden border-b border-wood-border w-full flex items-center min-h-[500px] sm:min-h-[550px] md:min-h-[600px] lg:min-h-[650px]">
         <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
@@ -71,7 +255,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
                   className="w-full sm:w-auto px-6 py-3 md:px-8 md:py-4 border border-white/40 hover:border-white text-white rounded-sm font-mono text-xs font-bold uppercase tracking-widest hover:bg-white/10 transition-all text-center z-20 relative"
                   id="hero-teaching-btn"
                 >
-                  Teaching Ethos
+                  My Teaching
                 </button>
               </div>
             </div>
@@ -80,7 +264,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
       </section>
 
       {/* Quick Core Values Grid */}
-      {/* Added 'hidden md:block' to hide on mobile/tablet and show on desktop screens */}
       <section className="hidden md:block bg-wood-beige py-16 px-6 border-b border-wood-border">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -143,16 +326,66 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
       <section className="p-5 sm:py-20 sm:px-6 bg-wood-light">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            <div className="lg:col-span-5 space-y-6">
-              <div className="flex flex-col items-center text-center p-8 bg-white border border-wood-border rounded-sm shadow-sm">
-                <div className="w-64 h-64 rounded-full overflow-hidden border-4 border-wood-beige bg-wood-light flex items-center justify-center shadow-inner relative group">
-                  <img
-                    src={profileImage}
-                    alt="Katherine Rosin"
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
+            <div className="lg:col-span-5 space-y-6 overflow-visible">
+              <div className="flex flex-col items-center text-center p-8 bg-white border border-wood-border rounded-sm shadow-sm relative overflow-visible">
+                
+                {/* Visual Feedback Wrapper */}
+                <div 
+                  key={burstKey}
+                  className="absolute top-[164px] left-[50%] w-0 h-0 flex items-center justify-center overflow-visible z-30 pointer-events-none"
+                >
+                  {/* Pinned background light ray wash */}
+                  {isFinalEggActive && (
+                    <div className="absolute w-[440px] h-[440px] -translate-x-1/2 -translate-y-1/2 rounded-full mix-blend-screen bg-gradient-to-r from-[#C29B68]/15 to-transparent animate-ray-glow pointer-events-none" />
+                  )}
+
+                  {/* String Letter */}
+                  {activeStringLetter && (
+                    <span className={`absolute font-serif font-bold string-letter-shadow select-none z-40 animate-letter-fade ${
+                      isFinalEggActive ? "text-[#C29B68] text-8xl" : "text-wood-brown text-5xl"
+                    }`}>
+                      {activeStringLetter}
+                    </span>
+                  )}
+
+                  {/* Radial Notes Burst */}
+                  {floatingNotes.map((note, idx) => (
+                    <span
+                      key={idx}
+                      className={`absolute font-serif pointer-events-none select-none z-30 animate-radial-burst ${
+                        isFinalEggActive ? "text-[#C29B68] font-bold text-2xl" : "text-wood-brown text-base"
+                      }`}
+                      style={{
+                        animationDelay: `${note.delay}s`,
+                        "--target-x": `${note.x}px`,
+                        "--target-y": `${note.y}px`,
+                        "--scale": note.scale,
+                        "--rot": `${note.rotation}deg`,
+                      } as React.CSSProperties}
+                    >
+                      {note.char}
+                    </span>
+                  ))}
                 </div>
+
+                {/* Profile Image Trigger */}
+                <button 
+                  onClick={handleProfileClick}
+                  className="focus:outline-none focus:ring-2 focus:ring-wood-sand rounded-full transition-all group p-0 relative z-20"
+                  aria-label="Katherine Rosin Profile - Violin String Easter Egg"
+                >
+                  <div className={`w-64 h-64 rounded-full overflow-hidden border-4 bg-wood-light flex items-center justify-center shadow-inner relative group transition-all duration-500 ${
+                    isFinalEggActive ? "border-[#C29B68] scale-105 ring-8 ring-wood-sand/20 shadow-xl" : "border-wood-beige"
+                  }`}>
+                    <img
+                      src={profileImage}
+                      alt="Katherine Rosin"
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-102"
+                    />
+                  </div>
+                </button>
+
                 <div className="mt-6 space-y-2">
                   <h4 className="font-serif font-bold text-xl text-wood-dark">
                     Katherine Rosin
@@ -169,11 +402,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
 
               <div className="border-l-4 border-wood-sand pl-6 py-2 bg-wood-beige/30">
                 <p className="font-sans italic text-sm text-wood-muted">
-                  "Progress on the Violin is built through hundreds of small,
-                  consistent improvements rather than dramatic breakthroughs."
+                  "Practise only as many times as you have breakfast."
                 </p>
                 <p className="font-mono text-[10px] text-wood-sand mt-2 font-bold uppercase tracking-wider">
-                  — Katherine Rosin
+                  — Shinichi Suzuki
                 </p>
               </div>
             </div>
@@ -225,7 +457,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
                   className="px-6 py-3 bg-wood-dark hover:bg-wood-sand text-white hover:text-white rounded-sm font-mono text-xs font-bold uppercase tracking-widest flex items-center space-x-2"
                   id="biography-teaching-philosophy-btn"
                 >
-                  <span>Teaching Ethos</span>
+                  <span>My Teaching</span>
                   <ArrowRight className="h-4 w-4" />
                 </button>
                 <button
@@ -242,7 +474,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
       </section>
 
       {/* Media Gallery Section */}
-      <section className="py-16 px-6 bg-wood-beige border-t border-b border-wood-border">
+      <section className="py-16 px-6 bg-wood-beige border-t border-wood-border">
         <div className="max-w-6xl mx-auto">
           {galleryItems.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -287,6 +519,16 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
         </div>
       </section>
 
+      {/* Featurable Reviews Section Widget */}
+      <section className="py-0 px-6 bg-wood-light border-t border-wood-border">
+        <div className="max-w-6xl mx-auto">
+          <div 
+            id="featurable-8119734b-c899-436c-b7ab-5a7c3f2058d3" 
+            data-featurable-async 
+          />
+        </div>
+      </section>
+
       {/* Image Lightbox Modal */}
       {activeImage && (
         <div
@@ -313,6 +555,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
           </div>
         </div>
       )}
+
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { STUDIO_INFO } from "../data";
 import { BannerHeader } from './BannerHeader'; 
 import bannerBackground from "../assets/images/banners/catbanner.jpg";
@@ -11,6 +11,7 @@ import {
   Instagram,
   ExternalLink,
   AlertCircle,
+  FileText,
 } from "lucide-react";
 import emailjs from "@emailjs/browser";
 
@@ -20,13 +21,37 @@ export const ContactView: React.FC = () => {
     email: "",
     phone: "",
     experience: "beginner",
-    ageGroup: "child",
+    agegroup: "child", // Standardized to match HTML attribute name
     message: "",
   });
 
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Track if the form container is visible on the screen
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const formRef = useRef<HTMLDivElement>(null);
+
+  // Set up the Intersection Observer to watch the form container visibility
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsFormVisible(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+
+    if (formRef.current) {
+      observer.observe(formRef.current);
+    }
+
+    return () => {
+      if (formRef.current) {
+        observer.unobserve(formRef.current);
+      }
+    };
+  }, []);
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -47,7 +72,7 @@ export const ContactView: React.FC = () => {
       from_email: formData.email,
       phone: formData.phone || "N/A",
       experience: formData.experience,
-      age_group: formData.ageGroup,
+      age_group: formData.agegroup, // Read from lowercase state key
       message: formData.message,
       to_name: "Katherine Rosin",
     };
@@ -70,13 +95,13 @@ export const ContactView: React.FC = () => {
         savedLeads.push({ ...formData, date: new Date().toISOString() });
         localStorage.setItem("studio_leads", JSON.stringify(savedLeads));
 
-        // Reset form fields
+        // Reset form fields cleanly
         setFormState({
           name: "",
           email: "",
           phone: "",
           experience: "beginner",
-          ageGroup: "child",
+          agegroup: "child",
           message: "",
         });
       })
@@ -89,8 +114,14 @@ export const ContactView: React.FC = () => {
       });
   };
 
+  const scrollToForm = () => {
+    if (formRef.current) {
+      formRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
-    <div className="animate-fadeIn">
+    <div className="animate-fadeIn relative">
 
       <BannerHeader 
         title="Contact Me & "
@@ -99,7 +130,7 @@ export const ContactView: React.FC = () => {
       />
 
       {/* Main Form & Contact Section */}
-      <section className="p-5 sm:py-20 sm:px-6 bg-wood-light">
+      <section className="p-5 sm:py-20 sm:px-6 bg-wood-light pb-24 lg:pb-20">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
             {/* Left Column: Direct Info Panel */}
@@ -165,7 +196,7 @@ export const ContactView: React.FC = () => {
               </div>
 
               {/* Instagram Callout Card */}
-              <div className="p-6 bg-wood-beige rounded-sm border border-wood-border space-y-4">
+              <div className="hidden lg:block p-6 bg-wood-beige rounded-sm border border-wood-border space-y-4">
                 <div className="flex items-center space-x-3">
                   <Instagram className="h-5 w-5 text-wood-sand" />
                   <h3 className="font-serif font-bold text-wood-dark text-base">
@@ -190,9 +221,12 @@ export const ContactView: React.FC = () => {
             </div>
 
             {/* Right Form Column */}
-            <div className="lg:col-span-7 bg-white p-8 rounded-sm shadow-xs border border-wood-border space-y-6">
+            <div 
+              ref={formRef}
+              id="form-container" 
+              className="lg:col-span-7 bg-white p-8 rounded-sm shadow-xs border border-wood-border space-y-6 scroll-mt-6"
+            >
               {submitted ? (
-                /* Success State */
                 <div
                   className="text-center py-12 space-y-4 animate-scaleUp"
                   id="form-success-state"
@@ -216,7 +250,6 @@ export const ContactView: React.FC = () => {
                   </button>
                 </div>
               ) : (
-                /* Native Interactive Form */
                 <form
                   onSubmit={handleFormSubmit}
                   className="space-y-6"
@@ -236,7 +269,6 @@ export const ContactView: React.FC = () => {
                   )}
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Your Full Name */}
                     <div className="space-y-1">
                       <label
                         htmlFor="name"
@@ -256,7 +288,6 @@ export const ContactView: React.FC = () => {
                       />
                     </div>
 
-                    {/* Email Address */}
                     <div className="space-y-1">
                       <label
                         htmlFor="email"
@@ -278,7 +309,6 @@ export const ContactView: React.FC = () => {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {/* Phone Number */}
                     <div className="space-y-1 sm:col-span-1">
                       <label
                         htmlFor="phone"
@@ -297,18 +327,17 @@ export const ContactView: React.FC = () => {
                       />
                     </div>
 
-                    {/* Student Age Category */}
                     <div className="space-y-1 sm:col-span-1">
                       <label
-                        htmlFor="ageGroup"
+                        htmlFor="agegroup"
                         className="font-mono text-[9px] uppercase tracking-widest text-wood-muted font-bold block"
                       >
                         Student Age
                       </label>
                       <select
-                        id="ageGroup"
-                        name="ageGroup"
-                        value={formData.ageGroup}
+                        id="agegroup"
+                        name="agegroup" 
+                        value={formData.agegroup}
                         onChange={handleInputChange}
                         className="w-full px-4 py-3 rounded-sm border border-wood-border bg-wood-light focus:outline-none focus:ring-1 focus:ring-wood-sand font-sans text-xs sm:text-sm text-wood-dark"
                       >
@@ -318,7 +347,6 @@ export const ContactView: React.FC = () => {
                       </select>
                     </div>
 
-                    {/* Student Experience */}
                     <div className="space-y-1 sm:col-span-1">
                       <label
                         htmlFor="experience"
@@ -342,7 +370,6 @@ export const ContactView: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Message */}
                   <div className="space-y-1">
                     <label
                       htmlFor="message"
@@ -362,7 +389,6 @@ export const ContactView: React.FC = () => {
                     ></textarea>
                   </div>
 
-                  {/* Submit Button */}
                   <div>
                     <button
                       type="submit"
@@ -381,7 +407,6 @@ export const ContactView: React.FC = () => {
                     </button>
                   </div>
 
-                  {/* Divider and Google Form CTA */}
                   <div className="relative flex items-center justify-center py-2">
                     <div className="absolute inset-0 flex items-center">
                       <div className="w-full border-t border-wood-border"></div>
@@ -409,6 +434,25 @@ export const ContactView: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Sticky Mobile Action Bar */}
+      {!submitted && (
+        <div 
+          className={`lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-[#fdfbf7]/90 backdrop-blur-md border-t border-wood-border z-40 flex justify-center items-center shadow-lg transition-all duration-500 transform ${
+            isFormVisible 
+              ? "opacity-0 translate-y-10 pointer-events-none" 
+              : "opacity-100 translate-y-0"
+          }`}
+        >
+          <button
+            onClick={scrollToForm}
+            className="w-full max-w-md py-3 bg-wood-sand hover:bg-wood-brown text-white font-mono text-xs font-bold uppercase tracking-widest rounded-sm flex items-center justify-center space-x-2 shadow-md transition-all active:scale-[0.98]"
+          >
+            <FileText className="h-4 w-4" />
+            <span>Fill Out Inquiry Form</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

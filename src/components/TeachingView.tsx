@@ -41,14 +41,14 @@ export const TeachingView: React.FC<TeachingViewProps> = ({ setCurrentPage }) =>
     <div className="animate-fadeIn">
 
       <BannerHeader 
-        title="Teaching Ethos & "
-        titleItalic="My lessons"
+        title="Violin Lessons with"
+        titleItalic="Katherine"
         backgroundImage={bannerBackground}
       />
 
-      {/* Main Philosophy & Background */}
+  {/* Main Philosophy & Background */}
       <section className="p-5 sm:py-20 sm:px-6 bg-wood-light">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-stretch"> {/* Changed items-start to items-stretch */}
           
           {/* Main Bio/Philosophy Content Column */}
           <div className="lg:col-span-7 space-y-6">
@@ -71,9 +71,20 @@ export const TeachingView: React.FC<TeachingViewProps> = ({ setCurrentPage }) =>
             </div>
           </div>
 
-          {/* Quick Value Cards Side Column */}
-          <div className="lg:col-span-5 space-y-6">
-            <div className="bg-white p-8 rounded-sm shadow-xs border border-wood-border space-y-6">
+          {/* Side Column Content */}
+          <div className="lg:col-span-5 flex flex-col justify-between h-full space-y-6"> {/* Added flex layout to make sure height fills nicely */}
+            
+            {/* DESKTOP ONLY: Studio Banner Image Replacement (Now matches left side height) */}
+            <div className="hidden md:flex flex-1 overflow-hidden rounded-sm border border-wood-border shadow-xs bg-white p-2 min-h-0">
+              <img 
+                src={bannerBackground} 
+                alt="Studio Banner" 
+                className="w-full h-full object-cover rounded-xs" 
+              />
+            </div>
+
+            {/* MOBILE ONLY: Core Focus Areas Checklist */}
+            <div className="md:hidden bg-white p-8 rounded-sm shadow-xs border border-wood-border space-y-6">
               <h3 className="font-serif font-bold text-lg text-wood-dark border-b border-wood-beige pb-3">
                 Core Focus Areas
               </h3>
