@@ -16,6 +16,8 @@ declare global {
       stop: () => void;
       destroy: () => void;
     };
+    gtag?: (...args: any[]) => void;
+    dataLayer?: any[];
   }
 }
 
@@ -35,7 +37,7 @@ export default function App() {
 
   // Handle Violin / Musical Symbol Mouse Trail
   useEffect(() => {
-    const symbols = ["♩", "♪", "♫", "♬", "𝄞", "𝄢"];
+    const symbols = ["♩", "♪", "♫", "♬", "𝄞", "𝄢", "Katherine"];
     let idCounter = 0;
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -138,6 +140,17 @@ export default function App() {
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
+
+  // Track Google Analytics page_view events on view transitions
+  useEffect(() => {
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'page_view', {
+        page_title: currentPage.charAt(0).toUpperCase() + currentPage.slice(1) + ' | Harrogate Violin Studio',
+        page_location: window.location.href,
+        page_path: `/#${currentPage}`,
+      });
+    }
+  }, [currentPage]);
 
   const renderActiveView = () => {
     switch (currentPage) {
