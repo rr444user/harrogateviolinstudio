@@ -41,9 +41,9 @@ export const Footer: React.FC<FooterProps> = ({ setCurrentPage }) => {
               </li>
               <li className="flex items-start space-x-2">
                 <MapPin className="h-4 w-4 text-wood-sand mt-0.5 flex-shrink-0" />
-                <span className="text-wood-beige/60 leading-relaxed">
+                <a href={`https://maps.app.goo.gl/vAnDS3CXtYdEL7Xa9`} target="_blank" rel="noopener noreferrer" className="hover:text-wood-sand hover:underline">
                   {STUDIO_INFO.address}
-                </span>
+                </a>
               </li>
             </ul>
           </div>
