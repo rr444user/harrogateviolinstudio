@@ -124,21 +124,36 @@ export default function App() {
     };
   }, []);
 
-  // Handle URL hash navigation
+  // Handle URL navigation for both hash-based links and direct paths
   useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace('#', '') as Page;
-      const validPages: Page[] = ['home', 'teaching', 'gallery', 'contact', 'faq'];
+    const validPages: Page[] = ['home', 'teaching', 'gallery', 'contact', 'faq'];
+
+    const getPageFromLocation = () => {
+      const hash = window.location.hash.replace('#', '').trim().toLowerCase() as Page;
+      const path = window.location.pathname.replace(/^\/+|\/+$/g, '').trim().toLowerCase() as Page;
+
       if (validPages.includes(hash)) {
-        setCurrentPage(hash);
-      } else {
-        setCurrentPage('home');
+        return hash;
       }
+
+      if (validPages.includes(path)) {
+        return path;
+      }
+
+      return 'home';
     };
 
-    handleHashChange();
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    const handleLocationChange = () => {
+      setCurrentPage(getPageFromLocation());
+    };
+
+    handleLocationChange();
+    window.addEventListener('hashchange', handleLocationChange);
+    window.addEventListener('popstate', handleLocationChange);
+    return () => {
+      window.removeEventListener('hashchange', handleLocationChange);
+      window.removeEventListener('popstate', handleLocationChange);
+    };
   }, []);
 
   // Track Google Analytics page_view events on view transitions

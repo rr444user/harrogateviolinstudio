@@ -4,6 +4,7 @@ import { STUDIO_INFO } from '../data';
 import { Calendar, HelpCircle, MapPin, CheckCircle, BookOpen, Music, Shield } from 'lucide-react';
 import { BannerHeader } from './BannerHeader'; 
 import bannerBackground from "../assets/images/banners/catbanner.jpg";
+import verticalImage from "../assets/images/verticalViolin.jpg";
 
 interface TeachingViewProps {
   setCurrentPage: (page: Page) => void;
@@ -169,16 +170,16 @@ export const TeachingView: React.FC<TeachingViewProps> = ({ setCurrentPage }) =>
               
               <div className="font-sans text-wood-muted text-sm sm:text-base space-y-4 leading-relaxed">
                 <p>
-                  Katherine teaches from a quiet, dedicated, acoustic-optimized garden studio situated in the <strong className="font-semibold text-wood-dark">Harlow Hill / Otley Road area</strong> of Harrogate (HG2).
+                  Katherine teaches from a quiet studio situated in the <strong className="font-semibold text-wood-dark">Valley Gardens area</strong> of Harrogate (HG2).
                 </p>
                 <p>
-                  The studio is ideally placed close to RHS Harlow Carr, making it highly accessible for students living across Harrogate, Knaresborough, Pannal, and Leeds.
+                  The studio is ideally placed 15 minutes from Harrogate Train Station and has plenty of parking, making it highly accessible for students living across Harrogate, Knaresborough, Pannal, and Leeds.
                 </p>
                 
                 <div className="bg-wood-beige p-4 rounded-sm border border-wood-border font-mono text-xs space-y-2 text-wood-dark">
                   <div className="flex items-start space-x-2">
                     <MapPin className="h-4 w-4 text-wood-sand mt-0.5 flex-shrink-0" />
-                    <span>Harlow Hill, Harrogate, HG2</span>
+                    <span>Valley Gardens, Harrogate, HG2</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Calendar className="h-4 w-4 text-wood-sand flex-shrink-0" />
@@ -196,7 +197,7 @@ export const TeachingView: React.FC<TeachingViewProps> = ({ setCurrentPage }) =>
                   onClick={handleContactClick}
                   className="px-6 py-3 bg-wood-dark hover:bg-wood-sand text-white rounded-sm font-mono text-xs font-bold uppercase tracking-widest flex items-center space-x-2"
                 >
-                  <span>Request Studio Address</span>
+                  <span>Schedule a Trial Lesson</span>
                 </button>
               </div>
             </div>
@@ -204,9 +205,9 @@ export const TeachingView: React.FC<TeachingViewProps> = ({ setCurrentPage }) =>
             {/* Right Map Visual Column */}
             <div className="lg:col-span-7">
               <div className="rounded-sm overflow-hidden border border-wood-border shadow-xs bg-wood-beige relative">
-                {/* Embed modern Google Maps static iframe with the exact coords of Otley Road area */}
+                {/* Embed modern Google Maps static iframe with the exact coords of Valley Gardens area */}
                 <iframe
-                  title="Harrogate Violin Studio location map on Harlow Hill"
+                  title="Harrogate Violin Studio location map on Valley Gardens"
                   width="100%"
                   height="400"
                   style={{ border: 0 }}

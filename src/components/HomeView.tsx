@@ -301,8 +301,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
                 Adult Learners
               </h3>
               <p className="text-xs text-wood-muted leading-relaxed font-sans">
-                Adults make up half the studio base. Flexible slot plans, highly
-                motivating returner programs, and friendly coaching.
+                Lessons are suitable for all ages, including adults.
+                From beginners to advanced players, all ability levels are welcome.
               </p>
             </div>
 
@@ -314,7 +314,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
                 Instrument Loan
               </h3>
               <p className="text-xs text-wood-muted leading-relaxed font-sans">
-                Borrow a size-appropriate Violin during trial stages to prevent
+                Violins are available to borrow, so you can start learning without any
                 upfront purchase expenses!
               </p>
             </div>
