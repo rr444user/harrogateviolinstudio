@@ -16,8 +16,6 @@ declare global {
       stop: () => void;
       destroy: () => void;
     };
-    gtag?: (...args: any[]) => void;
-    dataLayer?: any[];
   }
 }
 
@@ -124,61 +122,22 @@ export default function App() {
     };
   }, []);
 
-  // Handle URL navigation for both hash-based links and direct paths
+  // Handle URL hash navigation
   useEffect(() => {
-    const validPages: Page[] = ['home', 'teaching', 'gallery', 'contact', 'faq'];
-
-    const getPageFromLocation = () => {
-      const hash = window.location.hash.replace('#', '').trim().toLowerCase() as Page;
-      const path = window.location.pathname.replace(/^\/+|\/+$/g, '').trim().toLowerCase() as Page;
-
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#', '') as Page;
+      const validPages: Page[] = ['home', 'teaching', 'gallery', 'contact', 'faq'];
       if (validPages.includes(hash)) {
-        return hash;
+        setCurrentPage(hash);
+      } else {
+        setCurrentPage('home');
       }
-
-      if (validPages.includes(path)) {
-        return path;
-      }
-
-      return 'home';
     };
 
-    const handleLocationChange = () => {
-      setCurrentPage(getPageFromLocation());
-    };
-
-    handleLocationChange();
-    window.addEventListener('hashchange', handleLocationChange);
-    window.addEventListener('popstate', handleLocationChange);
-    return () => {
-      window.removeEventListener('hashchange', handleLocationChange);
-      window.removeEventListener('popstate', handleLocationChange);
-    };
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
-
-  // Track Google Analytics page_view events on view transitions
-  useEffect(() => {
-    const pageTitle = currentPage.charAt(0).toUpperCase() + currentPage.slice(1) + ' | Harrogate Violin Studio';
-    const pagePath = `/#${currentPage}`;
-
-    if (typeof window.gtag === 'function') {
-      window.gtag('event', 'page_view', {
-        page_title: pageTitle,
-        page_location: window.location.href,
-        page_path: pagePath,
-        send_to: 'AW-18263220065'
-      });
-    } else {
-      // Fallback array mapping if gtag hasn't booted up completely yet
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({
-        event: 'page_view',
-        page_title: pageTitle,
-        page_location: window.location.href,
-        page_path: pagePath,
-      });
-    }
-  }, [currentPage]);
 
   const renderActiveView = () => {
     switch (currentPage) {

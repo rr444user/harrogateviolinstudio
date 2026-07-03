@@ -54,7 +54,7 @@ export const TeachingView: React.FC<TeachingViewProps> = ({ setCurrentPage }) =>
           {/* Main Bio/Philosophy Content Column */}
           <div className="lg:col-span-7 space-y-6">
             <h2 className="font-serif font-bold text-2xl sm:text-3xl text-wood-dark tracking-tight">
-              London Conservatoire Origins to Harrogate
+              My Teaching
             </h2>
             <div className="font-sans text-wood-muted text-sm sm:text-base leading-relaxed space-y-5">
               <p>
@@ -64,10 +64,10 @@ export const TeachingView: React.FC<TeachingViewProps> = ({ setCurrentPage }) =>
                 Her students have gained places with the <strong className="font-semibold text-wood-dark">National Youth String Orchestra of Great Britain</strong>, <strong className="font-semibold text-wood-dark">Pro-Corda</strong>, and the <strong className="font-semibold text-wood-dark">National Schools Symphony Orchestra</strong>, and have received awards at the North London Festival, Ealing Festival of Music, and Greenwich Festival of Music.
               </p>
               <p>
-                Alongside her teaching practice, she maintains an active freelance career as a violinist. She has appeared at the <strong className="font-semibold text-wood-dark">Wigmore Hall</strong> with both piano trio and piano quintet ensembles. Her wider performance experience includes chamber music recitals, orchestral concerts, educational outreach projects, and festival engagements across London and the South East.
+                Alongside her teaching practice, she maintains an active freelance career as a violinist. She has appeared at the Wigmore Hall with both piano trio and piano quintet ensembles. Her wider performance experience includes chamber music recitals, orchestral concerts, educational outreach projects, and festival engagements across London and the South East.
               </p>
               <p className="bg-wood-beige p-5 rounded-sm border border-wood-border italic">
-                "Now based in Harrogate, Katherine specialises in teaching young children, while also working extensively with adult beginners and returners, who together make up a significant proportion of her studio. Her teaching focuses on building secure technical foundations and disciplined practice habits, alongside developing musical curiosity, confidence, and enjoyment."
+                Now based in Harrogate, Katherine specialises in teaching young children, while also working extensively with adult beginners and returners, who together make up a significant proportion of her studio. Her teaching focuses on building secure technical foundations and disciplined practice habits, alongside developing musical curiosity, confidence, and enjoyment.
               </p>
             </div>
           </div>
@@ -78,9 +78,13 @@ export const TeachingView: React.FC<TeachingViewProps> = ({ setCurrentPage }) =>
             {/* DESKTOP ONLY: Studio Banner Image Replacement (Now matches left side height) */}
             <div className="hidden md:flex flex-1 overflow-hidden rounded-sm border border-wood-border shadow-xs bg-white p-2 min-h-0">
               <img 
-                src={bannerBackground} 
+                src={verticalImage} 
                 alt="Studio Banner" 
                 className="w-full h-full object-cover rounded-xs" 
+                width="800"
+                height="1200"
+                loading="lazy"
+                decoding="async"
               />
             </div>
 
@@ -186,10 +190,6 @@ export const TeachingView: React.FC<TeachingViewProps> = ({ setCurrentPage }) =>
                     <span>Lessons by Appointment Only</span>
                   </div>
                 </div>
-
-                <p className="text-xs text-wood-muted italic">
-                  * Ample complimentary driveway and on-street parking is available directly outside the studio. Bus routes are also within immediate walking distance.
-                </p>
               </div>
 
               <div className="pt-2">
@@ -215,6 +215,7 @@ export const TeachingView: React.FC<TeachingViewProps> = ({ setCurrentPage }) =>
                   allowFullScreen
                   referrerPolicy="no-referrer"
                   className="w-full h-[400px]"
+                  loading="lazy"
                 ></iframe>
                 
                 <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-xs px-3 py-1.5 rounded-sm shadow-sm border border-wood-border text-center">

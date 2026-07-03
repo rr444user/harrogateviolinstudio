@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://harrogateviolinlessons.co.uk/sitemap.xml

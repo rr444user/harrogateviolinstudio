@@ -122,6 +122,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({ setCurrentPage }) => {
                   frameBorder="0"
                   className="w-full min-h-[500px] sm:min-h-[700px] border-0 rounded-xs"
                   allowFullScreen
+                  loading="lazy"
                 ></iframe>
               </div>
             </div>
@@ -143,6 +144,10 @@ export const GalleryView: React.FC<GalleryViewProps> = ({ setCurrentPage }) => {
                         alt={item.title} 
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102"
                         referrerPolicy="no-referrer"
+                        width="800"
+                        height="800"
+                        loading="lazy"
+                        decoding="async"
                       />
                       {/* Zoom overlay on hover */}
                       <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
@@ -220,6 +225,10 @@ export const GalleryView: React.FC<GalleryViewProps> = ({ setCurrentPage }) => {
                 alt={selectedItem.title} 
                 className="max-h-[55vh] object-contain rounded-xs"
                 referrerPolicy="no-referrer"
+                width="1200"
+                height="1200"
+                loading="eager"
+                decoding="async"
               />
             </div>
 
@@ -229,6 +238,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({ setCurrentPage }) => {
                 onClick={() => setSelectedItem(null)}
                 className="px-6 py-2.5 bg-wood-dark hover:bg-wood-sand text-white font-mono text-xs font-bold uppercase tracking-widest rounded-sm transition-colors"
                 id="modal-close-btn"
+                aria-label="Close certificate details"
               >
                 Close Certificate
               </button>

@@ -61,6 +61,10 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage }) =
                     alt="Harrogate Violin Studio Logo"
                     className="h-full w-auto object-contain"
                     referrerPolicy="no-referrer"
+                    width="120"
+                    height="120"
+                    loading="eager"
+                    decoding="async"
                   />
                 </div>
                 <div>
@@ -161,6 +165,10 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage }) =
                     alt="Harrogate Violin Studio Logo"
                     className="h-full w-auto object-contain"
                     referrerPolicy="no-referrer"
+                    width="120"
+                    height="120"
+                    loading="eager"
+                    decoding="async"
                   />
                 </div>
                 <span className="font-serif font-bold text-wood-dark text-base leading-tight">

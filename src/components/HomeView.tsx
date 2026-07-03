@@ -229,6 +229,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
             src={catBanner}
             alt="Studio Banner"
             className="w-full h-full object-cover object-center"
+            width="1600"
+            height="900"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/80 md:bg-gradient-to-r md:from-black/60 md:via-black/30 md:to-black/80" />
         </div>
@@ -382,6 +387,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
                       alt="Katherine Rosin"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-102"
+                      width="400"
+                      height="400"
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                 </button>
@@ -391,7 +400,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
                     Katherine Rosin
                   </h4>
                   <p className="font-mono text-[10px] uppercase tracking-widest text-wood-sand font-bold">
-                    Principal Violin Instructor
+                    Violin Teacher
                   </p>
                   <p className="font-sans text-xs text-wood-muted max-w-xs leading-relaxed mt-2">
                     Professional, individually tailored lessons at Harrogate
@@ -489,8 +498,12 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
                         src={src}
                         controls
                         playsInline
+                        preload="metadata"
                         className="w-full h-full object-cover"
-                      />
+                        aria-label="Studio video gallery media"
+                      >
+                        <track kind="captions" src="/captions/studio-gallery-captions.vtt" srcLang="en" label="English captions" default />
+                      </video>
                     </div>
                   );
                 }
@@ -506,6 +519,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
                       alt={`Studio Gallery Thumbnail ${index + 1}`}
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-102"
+                      width="800"
+                      height="800"
+                      loading="lazy"
+                      decoding="async"
                     />
                   </button>
                 );
@@ -551,6 +568,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
               alt="Enlarged Gallery Asset"
               referrerPolicy="no-referrer"
               className="max-w-full max-h-[85vh] object-contain rounded-xs shadow-2xl"
+              width="1400"
+              height="1400"
+              loading="eager"
+              decoding="async"
             />
           </div>
         </div>
