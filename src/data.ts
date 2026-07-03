@@ -117,7 +117,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
 ];
 
 export const STUDIO_INFO = {
-  email: 'harrogateviolinstudio@gmail.com',
+  email: 'katherine@harrogateviolinlessons.co.uk',
   phone: '07852718587',
   phoneDisplay: '+44 7852 718587',
   address: 'Harlow Terrace, Harrogate, HG2',

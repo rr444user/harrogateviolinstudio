@@ -142,30 +142,28 @@ export default function App() {
   }, []);
 
   // Track Google Analytics page_view events on view transitions
-useEffect(() => {
-  const logPageView = () => {
+  useEffect(() => {
+    const pageTitle = currentPage.charAt(0).toUpperCase() + currentPage.slice(1) + ' | Harrogate Violin Studio';
+    const pagePath = `/#${currentPage}`;
+
     if (typeof window.gtag === 'function') {
       window.gtag('event', 'page_view', {
-        page_title: currentPage.charAt(0).toUpperCase() + currentPage.slice(1) + ' | Harrogate Violin Studio',
+        page_title: pageTitle,
         page_location: window.location.href,
-        page_path: `/#${currentPage}`,
+        page_path: pagePath,
+        send_to: 'AW-18263220065'
+      });
+    } else {
+      // Fallback array mapping if gtag hasn't booted up completely yet
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: 'page_view',
+        page_title: pageTitle,
+        page_location: window.location.href,
+        page_path: pagePath,
       });
     }
-  };
-
-  // If gtag isn't loaded yet, push to dataLayer array safely
-  if (typeof window.gtag !== 'function') {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: 'page_view',
-      page_title: currentPage.charAt(0).toUpperCase() + currentPage.slice(1) + ' | Harrogate Violin Studio',
-      page_location: window.location.href,
-      page_path: `/#${currentPage}`,
-    });
-  } else {
-    logPageView();
-  }
-}, [currentPage]);
+  }, [currentPage]);
 
   const renderActiveView = () => {
     switch (currentPage) {

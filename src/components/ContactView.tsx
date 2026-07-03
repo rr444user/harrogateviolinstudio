@@ -15,6 +15,13 @@ import {
 } from "lucide-react";
 import emailjs from "@emailjs/browser";
 
+// Declare gtag on the window object so TypeScript allows global calls
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
+
 export const ContactView: React.FC = () => {
   const [formData, setFormState] = useState({
     name: "",
@@ -87,6 +94,15 @@ export const ContactView: React.FC = () => {
       .then(() => {
         setLoading(false);
         setSubmitted(true);
+
+        // Track conversion snippet on successful form submission
+        if (window.gtag) {
+          window.gtag("event", "conversion", {
+            send_to: "AW-18263220065",
+            value: 1.0,
+            currency: "GBP",
+          });
+        }
 
         // Save submission backup to localStorage
         const savedLeads = JSON.parse(
@@ -296,7 +312,7 @@ export const ContactView: React.FC = () => {
                         Email Address *
                       </label>
                       <input
-                        type="email"
+                        type="type"
                         id="email"
                         name="email"
                         required
@@ -421,6 +437,15 @@ export const ContactView: React.FC = () => {
                       href={STUDIO_INFO.googleFormUrl}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => {
+                        if (window.gtag) {
+                          window.gtag("event", "click", {
+                            send_to: "AW-18263220065",
+                            event_category: "External Link",
+                            event_label: "Google Forms Fallback",
+                          });
+                        }
+                      }}
                       className="inline-flex items-center space-x-1.5 font-mono text-xs text-wood-sand font-bold hover:underline"
                       id="google-form-external-link"
                     >
