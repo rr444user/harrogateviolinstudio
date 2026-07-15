@@ -191,7 +191,7 @@ My expectation is not perfection, but commitment. Students who make steady, cons
         @keyframes radialBurstAnimation {
           0% { 
             transform: translate(-50%, -50%) translate(0px, 0px) scale(0.2) rotate(0deg); 
-            opacity: 0;
+            opacity: 0; 
           }
           12% { 
             opacity: 1;
