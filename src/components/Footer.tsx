@@ -10,7 +10,8 @@ interface FooterProps {
 export const Footer: React.FC<FooterProps> = ({ setCurrentPage }) => {
   const handleNavClick = (page: Page) => {
     setCurrentPage(page);
-    window.location.hash = page;
+    const route = page === 'home' ? '/' : `/${page}`;
+    window.history.pushState({}, '', route);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

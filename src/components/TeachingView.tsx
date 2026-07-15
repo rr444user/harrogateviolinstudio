@@ -13,7 +13,7 @@ interface TeachingViewProps {
 export const TeachingView: React.FC<TeachingViewProps> = ({ setCurrentPage }) => {
   const handleContactClick = () => {
     setCurrentPage('contact');
-    window.location.hash = 'contact';
+    window.history.pushState({}, '', '/contact');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

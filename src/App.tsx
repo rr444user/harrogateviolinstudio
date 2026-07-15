@@ -122,21 +122,33 @@ export default function App() {
     };
   }, []);
 
-  // Handle URL hash navigation
+  // Handle URL route navigation
   useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace('#', '') as Page;
+    const getPageFromPath = (path: string): Page => {
+      const cleanPath = path.replace(/^\//, '').split('/')[0] || 'home';
       const validPages: Page[] = ['home', 'teaching', 'gallery', 'contact', 'faq'];
-      if (validPages.includes(hash)) {
-        setCurrentPage(hash);
-      } else {
-        setCurrentPage('home');
-      }
+      return validPages.includes(cleanPath as Page) ? (cleanPath as Page) : 'home';
     };
 
-    handleHashChange();
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    const handleRouteChange = () => {
+      const params = new URLSearchParams(window.location.search);
+      const redirectPath = params.get('redirect');
+      if (redirectPath) {
+        const redirectTarget = redirectPath.replace(/^\//, '').split('/')[0] || 'home';
+        const validPages: Page[] = ['home', 'teaching', 'gallery', 'contact', 'faq'];
+        if (validPages.includes(redirectTarget as Page)) {
+          window.history.replaceState({}, '', `/${redirectTarget}`);
+          setCurrentPage(redirectTarget as Page);
+          return;
+        }
+      }
+
+      setCurrentPage(getPageFromPath(window.location.pathname));
+    };
+
+    handleRouteChange();
+    window.addEventListener('popstate', handleRouteChange);
+    return () => window.removeEventListener('popstate', handleRouteChange);
   }, []);
 
   const renderActiveView = () => {

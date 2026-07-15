@@ -156,13 +156,13 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
 
   const handleContactClick = () => {
     setCurrentPage("contact");
-    window.location.hash = "contact";
+    window.history.pushState({}, '', '/contact');
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleTeachingClick = () => {
     setCurrentPage("teaching");
-    window.location.hash = "teaching";
+    window.history.pushState({}, '', '/teaching');
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -269,7 +269,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
       </section>
 
       {/* Quick Core Values Grid */}
-      <section className="hidden md:block bg-wood-beige py-16 px-6 border-b border-wood-border">
+      <section className="hidden md:block bg-wood-beige py-10 px-6 border-b border-wood-border">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="bg-wood-light p-6 rounded-sm shadow-xs border border-wood-border/60 space-y-3">
@@ -328,7 +328,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
       </section>
 
       {/* Main Welcome & Intro Section */}
-      <section className="p-5 sm:py-20 sm:px-6 bg-wood-light">
+      <section className="p-5 sm:py-10 sm:px-6 bg-wood-light">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             <div className="lg:col-span-5 space-y-6 overflow-visible">
@@ -420,9 +420,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
             </div>
 
             <div className="lg:col-span-7 space-y-6">
-              <span className="font-mono text-xs uppercase tracking-wider text-wood-sand font-bold block">
-                Meet the Teacher
-              </span>
               <h2 className="font-serif font-bold text-2xl sm:text-3xl md:text-4xl text-wood-dark tracking-tight leading-tight">
                 About Katherine Rosin
               </h2>
@@ -483,7 +480,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
       </section>
 
       {/* Media Gallery Section */}
-      <section className="py-16 px-6 bg-wood-beige border-t border-wood-border">
+      <section className="py-10 px-6 bg-wood-beige border-t border-wood-border">
         <div className="max-w-6xl mx-auto">
           {galleryItems.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -498,7 +495,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
                         src={src}
                         controls
                         playsInline
-                        preload="metadata"
+                        preload="auto"
                         className="w-full h-full object-cover"
                         aria-label="Studio video gallery media"
                       >
