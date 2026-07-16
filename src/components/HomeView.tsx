@@ -156,13 +156,13 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
 
   const handleContactClick = () => {
     setCurrentPage("contact");
-    window.history.pushState({}, '', '/contact');
+    window.history.pushState({}, '', '/contact/');
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleTeachingClick = () => {
     setCurrentPage("teaching");
-    window.history.pushState({}, '', '/teaching');
+    window.history.pushState({}, '', '/teaching/');
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 

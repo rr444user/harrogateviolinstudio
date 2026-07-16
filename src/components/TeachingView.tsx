@@ -13,7 +13,7 @@ interface TeachingViewProps {
 export const TeachingView: React.FC<TeachingViewProps> = ({ setCurrentPage }) => {
   const handleContactClick = () => {
     setCurrentPage('contact');
-    window.history.pushState({}, '', '/contact');
+    window.history.pushState({}, '', '/contact/');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -87,61 +87,6 @@ export const TeachingView: React.FC<TeachingViewProps> = ({ setCurrentPage }) =>
                 decoding="async"
               />
             </div>
-
-            {/* MOBILE ONLY: Core Focus Areas Checklist */}
-            <div className="md:hidden bg-white p-8 rounded-sm shadow-xs border border-wood-border space-y-6">
-              <h3 className="font-serif font-bold text-lg text-wood-dark border-b border-wood-beige pb-3">
-                Core Focus Areas
-              </h3>
-
-              <div className="flex items-start space-x-4">
-                <div className="p-2 bg-wood-beige rounded-sm text-wood-sand">
-                  <CheckCircle className="h-5 w-5" />
-                </div>
-                <div>
-                  <h4 className="font-sans font-semibold text-wood-dark text-sm">Secure Posture First</h4>
-                  <p className="text-xs text-wood-muted font-sans mt-1 leading-relaxed">
-                    Correct bow hold, balanced violin positioning, and healthy muscle memory patterns to avoid physical tension.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="p-2 bg-wood-beige rounded-sm text-wood-sand">
-                  <BookOpen className="h-5 w-5" />
-                </div>
-                <div>
-                  <h4 className="font-sans font-semibold text-wood-dark text-sm">Kodály Auditory Play</h4>
-                  <p className="text-xs text-wood-muted font-sans mt-1 leading-relaxed">
-                    Singing, inner hearing, and ear training exercises that enable students to hear pitch before they play.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="p-2 bg-wood-beige rounded-sm text-wood-sand">
-                  <Music className="h-5 w-5" />
-                </div>
-                <div>
-                  <h4 className="font-sans font-semibold text-wood-dark text-sm">Flexible Rep Methodologies</h4>
-                  <p className="text-xs text-wood-muted font-sans mt-1 leading-relaxed">
-                    Bending standard method books (Suzuki, ABRSM) to match individual student character and interests.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="p-2 bg-wood-beige rounded-sm text-wood-sand">
-                  <Shield className="h-5 w-5" />
-                </div>
-                <div>
-                  <h4 className="font-sans font-semibold text-wood-dark text-sm">No-Cost Borrowing Program</h4>
-                  <p className="text-xs text-wood-muted font-sans mt-1 leading-relaxed">
-                    Borrow a size-appropriate violin during initial trials to delay instrument buying expenses!
-                  </p>
-                </div>
-              </div>
-            </div>
             
             {/* CTA Section */}
             <div className="text-center pt-2">
@@ -177,7 +122,7 @@ export const TeachingView: React.FC<TeachingViewProps> = ({ setCurrentPage }) =>
                   Katherine teaches from a quiet studio situated in the <strong className="font-semibold text-wood-dark">Valley Gardens area</strong> of Harrogate (HG2).
                 </p>
                 <p>
-                  The studio is ideally placed 15 minutes from Harrogate Train Station and has plenty of parking, making it highly accessible for students living across Harrogate, Knaresborough, Pannal, and Leeds.
+                  The studio is just 15 minutes from Harrogate Train Station and has plenty of parking, making it accessible for students living across Harrogate, Knaresborough, Pannal, and Leeds.
                 </p>
                 
                 <div className="bg-wood-beige p-4 rounded-sm border border-wood-border font-mono text-xs space-y-2 text-wood-dark">

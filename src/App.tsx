@@ -130,6 +130,8 @@ export default function App() {
       return validPages.includes(cleanPath as Page) ? (cleanPath as Page) : 'home';
     };
 
+    const getCanonicalPath = (page: Page) => (page === 'home' ? '/' : `/${page}/`);
+
     const handleRouteChange = () => {
       const params = new URLSearchParams(window.location.search);
       const redirectPath = params.get('redirect');
@@ -137,13 +139,20 @@ export default function App() {
         const redirectTarget = redirectPath.replace(/^\//, '').split('/')[0] || 'home';
         const validPages: Page[] = ['home', 'teaching', 'gallery', 'contact', 'faq'];
         if (validPages.includes(redirectTarget as Page)) {
-          window.history.replaceState({}, '', `/${redirectTarget}`);
+          window.history.replaceState({}, '', getCanonicalPath(redirectTarget as Page));
           setCurrentPage(redirectTarget as Page);
           return;
         }
       }
 
-      setCurrentPage(getPageFromPath(window.location.pathname));
+      const page = getPageFromPath(window.location.pathname);
+      const canonicalPath = getCanonicalPath(page);
+
+      if (window.location.pathname !== canonicalPath) {
+        window.history.replaceState({}, '', `${canonicalPath}${window.location.search}${window.location.hash}`);
+      }
+
+      setCurrentPage(page);
     };
 
     handleRouteChange();
