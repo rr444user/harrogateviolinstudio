@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Page } from '../types';
 import { STUDIO_INFO } from '../data';
 import { Menu, X } from 'lucide-react';
-import studioLogo from '../assets/images/studio_logo_1782572398426.jpg';
+import { getResponsiveSrcSets, logoImage } from '../assets/media';
 
 interface HeaderProps {
   currentPage: Page;
@@ -12,6 +12,25 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const logoSources = getResponsiveSrcSets(logoImage);
+
+  const LogoPicture = () => (
+    <picture className="block h-full w-full">
+      <source type="image/avif" srcSet={logoSources.avif} />
+      <source type="image/webp" srcSet={logoSources.webp} />
+      <img
+        src={logoImage.fallback}
+        alt="Harrogate Violin Studio Logo"
+        className="h-full w-auto object-contain"
+        referrerPolicy="no-referrer"
+        width="71"
+        height="48"
+        loading="eager"
+        decoding="async"
+        fetchPriority="high"
+      />
+    </picture>
+  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -57,16 +76,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage }) =
                 id="header-logo-btn"
               >
                 <div className="h-12 flex items-center justify-center transition-all group-hover:scale-105">
-                  <img
-                    src={studioLogo}
-                    alt="Harrogate Violin Studio Logo"
-                    className="h-full w-auto object-contain"
-                    referrerPolicy="no-referrer"
-                    width="120"
-                    height="120"
-                    loading="eager"
-                    decoding="async"
-                  />
+                  <LogoPicture />
                 </div>
                 <div>
                   <span className={`block font-serif font-bold text-lg sm:text-xl leading-tight tracking-tight transition-colors ${
@@ -161,16 +171,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage }) =
             <div className="flex-shrink-0 flex items-center px-6">
               <div className="flex items-center space-x-2">
                 <div className="h-10 flex items-center justify-center">
-                  <img
-                    src={studioLogo}
-                    alt="Harrogate Violin Studio Logo"
-                    className="h-full w-auto object-contain"
-                    referrerPolicy="no-referrer"
-                    width="120"
-                    height="120"
-                    loading="eager"
-                    decoding="async"
-                  />
+                  <LogoPicture />
                 </div>
                 <span className="font-serif font-bold text-wood-dark text-base leading-tight">
                   Harrogate Violin Studio

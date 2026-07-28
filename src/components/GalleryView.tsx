@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Page } from '../types';
 import { Award, Instagram, ZoomIn } from 'lucide-react';
 import { BannerHeader } from './BannerHeader'; 
-import bannerBackground from "../assets/images/banners/catbanner.jpg";
+import { bannerImage, getBackgroundImageSet } from '../assets/media';
 
 // Import all real certificate images from assets
 import certx from '../assets/images/exam/certx.jpg';
@@ -62,7 +62,8 @@ export const GalleryView: React.FC<GalleryViewProps> = ({ setCurrentPage }) => {
       <BannerHeader 
         title="Life at the Studio & "
         titleItalic="My lessons"
-        backgroundImage={bannerBackground}
+        backgroundImage={bannerImage.fallback}
+        backgroundImageSet={getBackgroundImageSet(bannerImage)}
       />
       
 

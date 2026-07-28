@@ -3,8 +3,7 @@ import { Page } from '../types';
 import { STUDIO_INFO } from '../data';
 import { Calendar, HelpCircle, MapPin, CheckCircle, BookOpen, Music, Shield } from 'lucide-react';
 import { BannerHeader } from './BannerHeader'; 
-import bannerBackground from "../assets/images/banners/catbanner.jpg";
-import verticalImage from "../assets/images/verticalViolin.jpg";
+import { bannerImage, getBackgroundImageSet, verticalViolinImage } from '../assets/media';
 
 interface TeachingViewProps {
   setCurrentPage: (page: Page) => void;
@@ -44,7 +43,8 @@ export const TeachingView: React.FC<TeachingViewProps> = ({ setCurrentPage }) =>
       <BannerHeader 
         title="Violin Lessons with"
         titleItalic="Katherine"
-        backgroundImage={bannerBackground}
+        backgroundImage={bannerImage.fallback}
+        backgroundImageSet={getBackgroundImageSet(bannerImage)}
       />
 
   {/* Main Philosophy & Background */}
@@ -77,15 +77,19 @@ export const TeachingView: React.FC<TeachingViewProps> = ({ setCurrentPage }) =>
             
             {/* DESKTOP ONLY: Studio Banner Image Replacement (Now matches left side height) */}
             <div className="hidden md:flex flex-1 overflow-hidden rounded-sm border border-wood-border shadow-xs bg-white p-2 min-h-0">
-              <img 
-                src={verticalImage} 
-                alt="Studio Banner" 
-                className="w-full h-full object-cover rounded-xs" 
-                width="800"
-                height="1200"
-                loading="lazy"
-                decoding="async"
-              />
+              <picture className="block w-full h-full">
+                <source type="image/avif" srcSet={`${verticalViolinImage.avif1x} 1x, ${verticalViolinImage.avif2x} 2x`} />
+                <source type="image/webp" srcSet={`${verticalViolinImage.webp1x} 1x, ${verticalViolinImage.webp2x} 2x`} />
+                <img 
+                  src={verticalViolinImage.fallback}
+                  alt="Studio Banner" 
+                  className="w-full h-full object-cover rounded-xs" 
+                  width="800"
+                  height="1200"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
             </div>
             
             {/* CTA Section */}

@@ -1,8 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Page } from "../types";
 import { Award, BookOpen, Clock, Music2, ArrowRight, X } from "lucide-react";
-import catBanner from "../assets/images/banners/catbanner.jpg";
-import profileImage from "../assets/images/profile.png";
+import {
+  bannerImage,
+  galleryThumb1Image,
+  galleryThumb2Image,
+  getResponsiveSrcSets,
+  profileImage,
+} from "../assets/media";
 
 // Import your sound files here (or use absolute string URLs below)
 import eNote from "../assets/strings/Violin Tuner E String.mp3";
@@ -10,13 +15,8 @@ import aNote from "../assets/strings/Violin Tuner A String.mp3";
 import dNote from "../assets/strings/Violin Tuner D String.mp3";
 import gNote from "../assets/strings/Violin Tuner G String.mp3";
 
-const galleryModules = import.meta.glob(
-  "../assets/homeGallery/*.{png,jpg,jpeg,svg,mp4,webm}",
-  { eager: true },
-);
-const galleryItems = Object.values(galleryModules).map(
-  (module: any) => module.default || module,
-);
+import concertVideo from "../assets/homeGallery/01Concert.mp4";
+import girlPlayingVideo from "../assets/homeGallery/02GirlPlaying.mp4";
 
 interface HomeViewProps {
   setCurrentPage: (page: Page) => void;
@@ -41,8 +41,46 @@ const STRING_SOUNDS: Record<string, string> = {
   G: gNote,
 };
 
+const profileSources = getResponsiveSrcSets(profileImage);
+const galleryThumb1Sources = getResponsiveSrcSets(galleryThumb1Image);
+const galleryThumb2Sources = getResponsiveSrcSets(galleryThumb2Image);
+
+const HOME_GALLERY_ITEMS = [
+  {
+    id: "gallery-image-1",
+    kind: "image" as const,
+    alt: "Studio Gallery Thumbnail 3",
+    image: galleryThumb1Image,
+    sources: galleryThumb1Sources,
+    width: 274,
+    height: 343,
+  },
+  {
+    id: "gallery-image-2",
+    kind: "image" as const,
+    alt: "Studio Gallery Thumbnail 4",
+    image: galleryThumb2Image,
+    sources: galleryThumb2Sources,
+    width: 274,
+    height: 343,
+  },
+  {
+    id: "gallery-video-1",
+    kind: "video" as const,
+    src: concertVideo,
+    label: "Studio video gallery media",
+  },
+  {
+    id: "gallery-video-2",
+    kind: "video" as const,
+    src: girlPlayingVideo,
+    label: "Studio video gallery media",
+  },
+];
+
 export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
   const [activeImage, setActiveImage] = useState<string | null>(null);
+  const [videoPosters, setVideoPosters] = useState<{ concert?: string; girlPlaying?: string }>({});
   
   // Easter egg states
   const [clickCount, setClickCount] = useState(0);
@@ -65,6 +103,69 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
 
     return () => {
       document.body.removeChild(script);
+    };
+  }, []);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const captureFirstFrame = (src: string) =>
+      new Promise<string>((resolve, reject) => {
+        const video = document.createElement('video');
+        video.preload = 'auto';
+        video.muted = true;
+        video.playsInline = true;
+        video.src = src;
+
+        const cleanup = () => {
+          video.pause();
+          video.removeAttribute('src');
+          video.load();
+        };
+
+        const handleLoadedData = () => {
+          try {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const context = canvas.getContext('2d');
+
+            if (!context || !canvas.width || !canvas.height) {
+              throw new Error('Unable to capture video frame');
+            }
+
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL('image/jpeg', 0.82));
+          } catch (error) {
+            reject(error);
+          } finally {
+            cleanup();
+          }
+        };
+
+        const handleError = () => {
+          cleanup();
+          reject(new Error('Video frame capture failed'));
+        };
+
+        video.addEventListener('loadeddata', handleLoadedData, { once: true });
+        video.addEventListener('error', handleError, { once: true });
+      });
+
+    Promise.allSettled([
+      captureFirstFrame(concertVideo),
+      captureFirstFrame(girlPlayingVideo),
+    ]).then(([concertResult, girlResult]) => {
+      if (isCancelled) return;
+
+      setVideoPosters({
+        concert: concertResult.status === 'fulfilled' ? concertResult.value : undefined,
+        girlPlaying: girlResult.status === 'fulfilled' ? girlResult.value : undefined,
+      });
+    });
+
+    return () => {
+      isCancelled = true;
     };
   }, []);
 
@@ -166,10 +267,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const isVideo = (path: string) => {
-    return path.endsWith(".mp4") || path.endsWith(".webm");
-  };
-
   return (
     <div className="animate-fadeIn relative">
       <style>{`
@@ -225,16 +322,20 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
       {/* Hero Banner Section */}
       <section className="relative bg-[#0a0603] text-white overflow-hidden border-b border-wood-border w-full flex items-center min-h-[500px] sm:min-h-[550px] md:min-h-[600px] lg:min-h-[650px]">
         <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
-          <img
-            src={catBanner}
-            alt="Studio Banner"
-            className="w-full h-full object-cover object-center"
-            width="1600"
-            height="900"
-            loading="eager"
-            decoding="async"
-            fetchPriority="high"
-          />
+          <picture className="block w-full h-full">
+            <source type="image/avif" srcSet={`${bannerImage.avif1x} 1x, ${bannerImage.avif2x} 2x`} />
+            <source type="image/webp" srcSet={`${bannerImage.webp1x} 1x, ${bannerImage.webp2x} 2x`} />
+            <img
+              src={bannerImage.fallback}
+              alt="Studio Banner"
+              className="w-full h-full object-cover object-center"
+              width="1600"
+              height="900"
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+            />
+          </picture>
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/80 md:bg-gradient-to-r md:from-black/60 md:via-black/30 md:to-black/80" />
         </div>
 
@@ -276,12 +377,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
               <div className="text-wood-sand">
                 <Award className="h-8 w-8" />
               </div>
-              <h3 className="font-serif text-lg font-bold text-wood-dark">
+              <h2 className="font-serif text-lg font-bold text-wood-dark">
                 ABRSM & Trinity
-              </h3>
+              </h2>
               <p className="text-xs text-wood-muted leading-relaxed font-sans">
-                Extensive success preparing students for board exams, auditions,
-                and competitions with consistent distinctions.
+                Tailored preparation for music exams, auditions, and competitions, helping students consistently achieve their best.
               </p>
             </div>
 
@@ -289,9 +389,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
               <div className="text-wood-sand">
                 <BookOpen className="h-8 w-8" />
               </div>
-              <h3 className="font-serif text-lg font-bold text-wood-dark">
+              <h2 className="font-serif text-lg font-bold text-wood-dark">
                 Suzuki & Kodály
-              </h3>
+              </h2>
               <p className="text-xs text-wood-muted leading-relaxed font-sans">
                 Kodály-focused training for children, building secure physical
                 posture, steady rhythm, and early ear pitch training.
@@ -302,9 +402,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
               <div className="text-wood-sand">
                 <Clock className="h-8 w-8" />
               </div>
-              <h3 className="font-serif text-lg font-bold text-wood-dark">
+              <h2 className="font-serif text-lg font-bold text-wood-dark">
                 Adult Learners
-              </h3>
+              </h2>
               <p className="text-xs text-wood-muted leading-relaxed font-sans">
                 Lessons are suitable for all ages, including adults.
                 From beginners to advanced players, all ability levels are welcome.
@@ -315,12 +415,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
               <div className="text-wood-sand">
                 <Music2 className="h-8 w-8" />
               </div>
-              <h3 className="font-serif text-lg font-bold text-wood-dark">
-                Instrument Loan
-              </h3>
+              <h2 className="font-serif text-lg font-bold text-wood-dark">
+                Free Instrument Loan
+              </h2>
               <p className="text-xs text-wood-muted leading-relaxed font-sans">
-                Violins are available to borrow, so you can start learning without any
-                upfront purchase expenses!
+                Borrow one of my violins for free so you can start learning without buying an instrument first.
               </p>
             </div>
           </div>
@@ -382,16 +481,20 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
                   <div className={`w-64 h-64 rounded-full overflow-hidden border-4 bg-wood-light flex items-center justify-center shadow-inner relative group transition-all duration-500 ${
                     isFinalEggActive ? "border-[#C29B68] scale-105 ring-8 ring-wood-sand/20 shadow-xl" : "border-wood-beige"
                   }`}>
-                    <img
-                      src={profileImage}
-                      alt="Katherine Rosin"
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-102"
-                      width="400"
-                      height="400"
-                      loading="lazy"
-                      decoding="async"
-                    />
+                    <picture className="block w-full h-full">
+                      <source type="image/avif" srcSet={profileSources.avif} />
+                      <source type="image/webp" srcSet={profileSources.webp} />
+                      <img
+                        src={profileImage.fallback}
+                        alt="Katherine Rosin"
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-102"
+                        width="248"
+                        height="248"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </picture>
                   </div>
                 </button>
 
@@ -482,24 +585,26 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
       {/* Media Gallery Section */}
       <section className="py-10 px-6 bg-wood-beige border-t border-wood-border">
         <div className="max-w-6xl mx-auto">
-          {galleryItems.length > 0 ? (
+          {HOME_GALLERY_ITEMS.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {galleryItems.map((src, index) => {
-                if (isVideo(src)) {
+              {HOME_GALLERY_ITEMS.map((item) => {
+                if (item.kind === 'video') {
+                  const poster = item.id === 'gallery-video-1' ? videoPosters.concert : videoPosters.girlPlaying;
+
                   return (
                     <div
-                      key={index}
+                      key={item.id}
                       className="bg-white border border-wood-border/60 rounded-sm overflow-hidden shadow-xs hover:shadow-md transition-all aspect-square flex items-center justify-center relative"
                     >
                       <video
-                        src={src}
+                        src={item.src}
+                        poster={poster}
                         controls
                         playsInline
-                        preload="auto"
+                        preload="metadata"
                         className="w-full h-full object-cover"
-                        aria-label="Studio video gallery media"
+                        aria-label={item.label}
                       >
-                        <track kind="captions" src="/captions/studio-gallery-captions.vtt" srcLang="en" label="English captions" default />
                       </video>
                     </div>
                   );
@@ -507,20 +612,24 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
 
                 return (
                   <button
-                    key={index}
-                    onClick={() => setActiveImage(src)}
+                    key={item.id}
+                    onClick={() => setActiveImage(item.image.fallback)}
                     className="bg-white border border-wood-border/60 rounded-sm overflow-hidden shadow-xs hover:shadow-md transition-all group aspect-square flex items-center justify-center relative cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-wood-sand"
                   >
-                    <img
-                      src={src}
-                      alt={`Studio Gallery Thumbnail ${index + 1}`}
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-102"
-                      width="800"
-                      height="800"
-                      loading="lazy"
-                      decoding="async"
-                    />
+                    <picture className="block w-full h-full">
+                      <source type="image/avif" srcSet={item.sources.avif} />
+                      <source type="image/webp" srcSet={item.sources.webp} />
+                      <img
+                        src={item.image.fallback}
+                        alt={item.alt}
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-102"
+                        width={item.width}
+                        height={item.height}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </picture>
                   </button>
                 );
               })}

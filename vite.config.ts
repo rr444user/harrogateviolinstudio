@@ -3,8 +3,19 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig} from 'vite';
 
+const preloadStylesheets = () => ({
+  name: 'preload-stylesheets',
+  enforce: 'post' as const,
+  transformIndexHtml(html: string) {
+    return html.replace(
+      /<link[^>]*rel="stylesheet"[^>]*href="([^"]+\.css)"[^>]*>/g,
+      '<link rel="preload" as="style" href="$1" onload="this.onload=null;this.rel=\'stylesheet\'"><noscript><link rel="stylesheet" href="$1"></noscript>',
+    );
+  },
+});
+
 export default defineConfig(({ command }) => ({
-    plugins: [react(), tailwindcss()],
+    plugins: [react(), tailwindcss(), preloadStylesheets()],
     base: '/',
     resolve: {
       alias: {
