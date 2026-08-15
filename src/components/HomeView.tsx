@@ -25,8 +25,8 @@ interface HomeViewProps {
 interface FloatingNote {
   id: number;
   char: string;
-  x: number; 
-  y: number; 
+  x: number;
+  y: number;
   delay: number;
   scale: number;
   rotation: number;
@@ -80,15 +80,20 @@ const HOME_GALLERY_ITEMS = [
 
 export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
   const [activeImage, setActiveImage] = useState<string | null>(null);
-  const [videoPosters, setVideoPosters] = useState<{ concert?: string; girlPlaying?: string }>({});
-  
+  const [videoPosters, setVideoPosters] = useState<{
+    concert?: string;
+    girlPlaying?: string;
+  }>({});
+
   // Easter egg states
   const [clickCount, setClickCount] = useState(0);
   const [isFinalEggActive, setIsFinalEggActive] = useState(false);
-  const [activeStringLetter, setActiveStringLetter] = useState<string | null>(null);
+  const [activeStringLetter, setActiveStringLetter] = useState<string | null>(
+    null,
+  );
   const [floatingNotes, setFloatingNotes] = useState<FloatingNote[]>([]);
-  const [burstKey, setBurstKey] = useState(0); 
-  
+  const [burstKey, setBurstKey] = useState(0);
+
   const clickTimer = useRef<NodeJS.Timeout | null>(null);
   const resetTimer = useRef<NodeJS.Timeout | null>(null);
   const activeAudio = useRef<HTMLAudioElement | null>(null);
@@ -111,31 +116,31 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
 
     const captureFirstFrame = (src: string) =>
       new Promise<string>((resolve, reject) => {
-        const video = document.createElement('video');
-        video.preload = 'auto';
+        const video = document.createElement("video");
+        video.preload = "auto";
         video.muted = true;
         video.playsInline = true;
         video.src = src;
 
         const cleanup = () => {
           video.pause();
-          video.removeAttribute('src');
+          video.removeAttribute("src");
           video.load();
         };
 
         const handleLoadedData = () => {
           try {
-            const canvas = document.createElement('canvas');
+            const canvas = document.createElement("canvas");
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
-            const context = canvas.getContext('2d');
+            const context = canvas.getContext("2d");
 
             if (!context || !canvas.width || !canvas.height) {
-              throw new Error('Unable to capture video frame');
+              throw new Error("Unable to capture video frame");
             }
 
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            resolve(canvas.toDataURL('image/jpeg', 0.82));
+            resolve(canvas.toDataURL("image/jpeg", 0.82));
           } catch (error) {
             reject(error);
           } finally {
@@ -145,11 +150,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
 
         const handleError = () => {
           cleanup();
-          reject(new Error('Video frame capture failed'));
+          reject(new Error("Video frame capture failed"));
         };
 
-        video.addEventListener('loadeddata', handleLoadedData, { once: true });
-        video.addEventListener('error', handleError, { once: true });
+        video.addEventListener("loadeddata", handleLoadedData, { once: true });
+        video.addEventListener("error", handleError, { once: true });
       });
 
     Promise.allSettled([
@@ -159,8 +164,12 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
       if (isCancelled) return;
 
       setVideoPosters({
-        concert: concertResult.status === 'fulfilled' ? concertResult.value : undefined,
-        girlPlaying: girlResult.status === 'fulfilled' ? girlResult.value : undefined,
+        concert:
+          concertResult.status === "fulfilled"
+            ? concertResult.value
+            : undefined,
+        girlPlaying:
+          girlResult.status === "fulfilled" ? girlResult.value : undefined,
       });
     });
 
@@ -170,73 +179,76 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
   }, []);
 
   const handleProfileClick = () => {
-  setClickCount((prev) => {
-    const nextCount = prev + 1;
-    const currentString = VIOLIN_STRINGS[prev] || VIOLIN_STRINGS[0];
-    
-    if (clickTimer.current) clearTimeout(clickTimer.current);
-    
-    // Play the matching violin note audio
-    const audioPath = STRING_SOUNDS[currentString];
-    if (audioPath) {
-      const audio = new Audio(audioPath);
-      audio.volume = 1.0; // Start at full volume
-      audio.currentTime = 0; 
-      
-      audio.play()
-        .then(() => {
-          // Set a timeout to start the fade out after 9 seconds (so it finishes by 10s)
-          setTimeout(() => {
-            const fadeInterval = setInterval(() => {
-              // Decrease volume by 0.1 every 100ms (takes 1 second total)
-              if (audio.volume > 0.1) {
-                audio.volume = Math.max(0, audio.volume - 0.1);
-              } else {
-                // Once it hits 0, stop the interval and pause the audio completely
-                clearInterval(fadeInterval);
-                audio.pause();
-                audio.currentTime = 0;
-              }
-            }, 100);
-          }, 9000); // Wait 9 seconds before starting the 1-second fade down
-        })
-        .catch((err) => console.log("Audio playback blocked or failed:", err));
-    }
-    
-    triggerStringEffect(currentString, nextCount === 4);
-    
-    if (nextCount === 4) {
-      return 0; 
-    }
-    
-    clickTimer.current = setTimeout(() => {
-      setClickCount(0);
-    }, 3000);
-    
-    return nextCount;
-  });
-};
+    setClickCount((prev) => {
+      const nextCount = prev + 1;
+      const currentString = VIOLIN_STRINGS[prev] || VIOLIN_STRINGS[0];
+
+      if (clickTimer.current) clearTimeout(clickTimer.current);
+
+      // Play the matching violin note audio
+      const audioPath = STRING_SOUNDS[currentString];
+      if (audioPath) {
+        const audio = new Audio(audioPath);
+        audio.volume = 1.0; // Start at full volume
+        audio.currentTime = 0;
+
+        audio
+          .play()
+          .then(() => {
+            // Set a timeout to start the fade out after 9 seconds (so it finishes by 10s)
+            setTimeout(() => {
+              const fadeInterval = setInterval(() => {
+                // Decrease volume by 0.1 every 100ms (takes 1 second total)
+                if (audio.volume > 0.1) {
+                  audio.volume = Math.max(0, audio.volume - 0.1);
+                } else {
+                  // Once it hits 0, stop the interval and pause the audio completely
+                  clearInterval(fadeInterval);
+                  audio.pause();
+                  audio.currentTime = 0;
+                }
+              }, 100);
+            }, 9000); // Wait 9 seconds before starting the 1-second fade down
+          })
+          .catch((err) =>
+            console.log("Audio playback blocked or failed:", err),
+          );
+      }
+
+      triggerStringEffect(currentString, nextCount === 4);
+
+      if (nextCount === 4) {
+        return 0;
+      }
+
+      clickTimer.current = setTimeout(() => {
+        setClickCount(0);
+      }, 3000);
+
+      return nextCount;
+    });
+  };
 
   const triggerStringEffect = (stringLetter: string, isFinal: boolean) => {
     if (resetTimer.current) clearTimeout(resetTimer.current);
-    
-    setBurstKey(prev => prev + 1);
-    
+
+    setBurstKey((prev) => prev + 1);
+
     const notes = ["♩", "♪", "♫", "♬", "𝄞", "𝄢"];
     setActiveStringLetter(stringLetter);
     setIsFinalEggActive(isFinal);
 
     const numNotes = isFinal ? 42 : 16;
-    
+
     // --- CHANGE THROW DISTANCE PIXELS HERE ---
-    const maxRadius = isFinal ? 210 : 190; 
-    
+    const maxRadius = isFinal ? 210 : 190;
+
     const newNotes = Array.from({ length: numNotes }).map((_, i) => {
       const angleInRadians = ((360 / numNotes) * i * Math.PI) / 180;
       const distance = maxRadius * (0.85 + Math.random() * 0.25);
-      
+
       return {
-        id: i, 
+        id: i,
         char: notes[Math.floor(Math.random() * notes.length)],
         x: Math.cos(angleInRadians) * distance,
         y: Math.sin(angleInRadians) * distance,
@@ -245,25 +257,28 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
         rotation: Math.random() * 50 - 25,
       };
     });
-    
+
     setFloatingNotes(newNotes);
 
-    resetTimer.current = setTimeout(() => {
-      setIsFinalEggActive(false);
-      setFloatingNotes([]);
-      setActiveStringLetter(null);
-    }, isFinal ? 3000 : 1800);
+    resetTimer.current = setTimeout(
+      () => {
+        setIsFinalEggActive(false);
+        setFloatingNotes([]);
+        setActiveStringLetter(null);
+      },
+      isFinal ? 3000 : 1800,
+    );
   };
 
   const handleContactClick = () => {
     setCurrentPage("contact");
-    window.history.pushState({}, '', '/contact/');
+    window.history.pushState({}, "", "/contact/");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleTeachingClick = () => {
     setCurrentPage("teaching");
-    window.history.pushState({}, '', '/teaching/');
+    window.history.pushState({}, "", "/teaching/");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -323,8 +338,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
       <section className="relative bg-[#0a0603] text-white overflow-hidden border-b border-wood-border w-full flex items-center min-h-[500px] sm:min-h-[550px] md:min-h-[600px] lg:min-h-[650px]">
         <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
           <picture className="block w-full h-full">
-            <source type="image/avif" srcSet={`${bannerImage.avif1x} 1x, ${bannerImage.avif2x} 2x`} />
-            <source type="image/webp" srcSet={`${bannerImage.webp1x} 1x, ${bannerImage.webp2x} 2x`} />
+            <source
+              type="image/avif"
+              srcSet={`${bannerImage.avif1x} 1x, ${bannerImage.avif2x} 2x`}
+            />
+            <source
+              type="image/webp"
+              srcSet={`${bannerImage.webp1x} 1x, ${bannerImage.webp2x} 2x`}
+            />
             <img
               src={bannerImage.fallback}
               alt="Studio Banner"
@@ -354,7 +375,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
                   className="w-full sm:w-auto px-6 py-3 md:px-8 md:py-4 bg-wood-sand hover:bg-wood-brown text-white rounded-sm font-mono text-xs font-bold uppercase tracking-widest shadow-lg shadow-wood-sand/20 transform active:scale-95 transition-all text-center z-20 relative"
                   id="hero-contact-btn"
                 >
-                  Book Intro Lesson
+                  Book Trial Lesson
                 </button>
                 <button
                   onClick={handleTeachingClick}
@@ -381,7 +402,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
                 ABRSM & Trinity
               </h2>
               <p className="text-xs text-wood-muted leading-relaxed font-sans">
-                Tailored preparation for music exams, auditions, and competitions, helping students consistently achieve their best.
+                Tailored preparation for music exams, auditions, and
+                competitions, helping students consistently achieve their best.
               </p>
             </div>
 
@@ -406,8 +428,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
                 Adult Learners
               </h2>
               <p className="text-xs text-wood-muted leading-relaxed font-sans">
-                Lessons are suitable for all ages, including adults.
-                From beginners to advanced players, all ability levels are welcome.
+                Lessons are suitable for all ages, including adults. From
+                beginners to advanced players, all ability levels are welcome.
               </p>
             </div>
 
@@ -419,7 +441,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
                 Free Instrument Loan
               </h2>
               <p className="text-xs text-wood-muted leading-relaxed font-sans">
-                Borrow one of my violins for free so you can start learning without buying an instrument first.
+                Borrow one of my violins for free so you can start learning
+                without buying an instrument first.
               </p>
             </div>
           </div>
@@ -432,9 +455,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             <div className="lg:col-span-5 space-y-6 overflow-visible">
               <div className="flex flex-col items-center text-center p-8 bg-white border border-wood-border rounded-sm shadow-sm relative overflow-visible">
-                
                 {/* Visual Feedback Wrapper */}
-                <div 
+                <div
                   key={burstKey}
                   className="absolute top-[164px] left-[50%] w-0 h-0 flex items-center justify-center overflow-visible z-30 pointer-events-none"
                 >
@@ -445,9 +467,13 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
 
                   {/* String Letter */}
                   {activeStringLetter && (
-                    <span className={`absolute font-serif font-bold string-letter-shadow select-none z-40 animate-letter-fade ${
-                      isFinalEggActive ? "text-[#C29B68] text-8xl" : "text-wood-brown text-5xl"
-                    }`}>
+                    <span
+                      className={`absolute font-serif font-bold string-letter-shadow select-none z-40 animate-letter-fade ${
+                        isFinalEggActive
+                          ? "text-[#C29B68] text-8xl"
+                          : "text-wood-brown text-5xl"
+                      }`}
+                    >
                       {activeStringLetter}
                     </span>
                   )}
@@ -457,15 +483,19 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
                     <span
                       key={idx}
                       className={`absolute font-serif pointer-events-none select-none z-30 animate-radial-burst ${
-                        isFinalEggActive ? "text-[#C29B68] font-bold text-2xl" : "text-wood-brown text-base"
+                        isFinalEggActive
+                          ? "text-[#C29B68] font-bold text-2xl"
+                          : "text-wood-brown text-base"
                       }`}
-                      style={{
-                        animationDelay: `${note.delay}s`,
-                        "--target-x": `${note.x}px`,
-                        "--target-y": `${note.y}px`,
-                        "--scale": note.scale,
-                        "--rot": `${note.rotation}deg`,
-                      } as React.CSSProperties}
+                      style={
+                        {
+                          animationDelay: `${note.delay}s`,
+                          "--target-x": `${note.x}px`,
+                          "--target-y": `${note.y}px`,
+                          "--scale": note.scale,
+                          "--rot": `${note.rotation}deg`,
+                        } as React.CSSProperties
+                      }
                     >
                       {note.char}
                     </span>
@@ -473,14 +503,18 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
                 </div>
 
                 {/* Profile Image Trigger */}
-                <button 
+                <button
                   onClick={handleProfileClick}
                   className="focus:outline-none focus:ring-2 focus:ring-wood-sand rounded-full transition-all group p-0 relative z-20"
                   aria-label="Katherine Rosin Profile - Violin String Easter Egg"
                 >
-                  <div className={`w-64 h-64 rounded-full overflow-hidden border-4 bg-wood-light flex items-center justify-center shadow-inner relative group transition-all duration-500 ${
-                    isFinalEggActive ? "border-[#C29B68] scale-105 ring-8 ring-wood-sand/20 shadow-xl" : "border-wood-beige"
-                  }`}>
+                  <div
+                    className={`w-64 h-64 rounded-full overflow-hidden border-4 bg-wood-light flex items-center justify-center shadow-inner relative group transition-all duration-500 ${
+                      isFinalEggActive
+                        ? "border-[#C29B68] scale-105 ring-8 ring-wood-sand/20 shadow-xl"
+                        : "border-wood-beige"
+                    }`}
+                  >
                     <picture className="block w-full h-full">
                       <source type="image/avif" srcSet={profileSources.avif} />
                       <source type="image/webp" srcSet={profileSources.webp} />
@@ -588,8 +622,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
           {HOME_GALLERY_ITEMS.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
               {HOME_GALLERY_ITEMS.map((item) => {
-                if (item.kind === 'video') {
-                  const poster = item.id === 'gallery-video-1' ? videoPosters.concert : videoPosters.girlPlaying;
+                if (item.kind === "video") {
+                  const poster =
+                    item.id === "gallery-video-1"
+                      ? videoPosters.concert
+                      : videoPosters.girlPlaying;
 
                   return (
                     <div
@@ -604,8 +641,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
                         preload="metadata"
                         className="w-full h-full object-cover"
                         aria-label={item.label}
-                      >
-                      </video>
+                      ></video>
                     </div>
                   );
                 }
@@ -645,9 +681,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
       {/* Featurable Reviews Section Widget */}
       <section className="py-0 px-6 bg-wood-light border-t border-wood-border">
         <div className="max-w-6xl mx-auto">
-          <div 
-            id="featurable-8119734b-c899-436c-b7ab-5a7c3f2058d3" 
-            data-featurable-async 
+          <div
+            id="featurable-8119734b-c899-436c-b7ab-5a7c3f2058d3"
+            data-featurable-async
           />
         </div>
       </section>
@@ -682,7 +718,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ setCurrentPage }) => {
           </div>
         </div>
       )}
-
     </div>
   );
 };
