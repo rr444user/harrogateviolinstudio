@@ -125,7 +125,7 @@ export const TeachingView: React.FC<TeachingViewProps> = ({
           {/* Side Column Content (Pricing Table, Loan Info & CTA) */}
           <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
             {/* Studio Pricing Card */}
-            <div className="bg-white rounded-sm border border-wood-border shadow-xs p-6 space-y-5">
+            {/* <div className="bg-white rounded-sm border border-wood-border shadow-xs p-6 space-y-5">
               <div className="border-b border-wood-border pb-3">
                 <h3 className="font-serif font-bold text-2xl text-wood-dark tracking-tight">
                   Lesson Pricing
@@ -203,7 +203,7 @@ export const TeachingView: React.FC<TeachingViewProps> = ({
                 </strong>{" "}
                 lessons that finish by 3:30pm.
               </p>
-            </div>
+            </div> */}
 
             {/* Free Instrument Loan Card */}
             <div className="bg-wood-beige/40 rounded-sm border border-wood-border p-4 space-y-2.5">
